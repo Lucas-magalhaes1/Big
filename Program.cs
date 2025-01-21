@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Big.Components;
 using Big.Components.Account;
 using Big.Data;
+using Big.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+builder.Services.AddScoped<ProdutoService>();
+
 
 builder.Services.AddAuthentication(options =>
     {
