@@ -2,10 +2,15 @@ using Big.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Big.Data;
-
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-    : IdentityDbContext<ApplicationUser>(options)
+namespace Big.Data
 {
-    public DbSet<Produto> Produtos { get; set; }
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+            : base(options)
+        {
+        }
+
+        public DbSet<Produto> Produtos { get; set; }
+    }
 }
