@@ -1,0 +1,116 @@
+@page "/Produtos"
+@using System.Globalization
+@using Big.Services
+@inject ProdutoService ProdutoService
+@inject NavigationManager Navigation
+@using Big.Models
+@rendermode InteractiveServer
+
+<h3>Catálogo de Produtos</h3>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a class="btn btn-success" href="/Produtos/Adicionar">Adicionar Produto</a>
+    <a class="btn btn-outline-secondary btn-sm" href="/Produtos/Estoque">Gerenciar Estoque</a>
+</div>
+
+<!-- Filtros de Pesquisa -->
+<div class="mb-4 p-3 border rounded">
+    <h5>Filtros</h5>
+    <EditForm Model="@filtros" OnValidSubmit="OnValidSubmitAsync">
+        <DataAnnotationsValidator />
+        <div class="row">
+            <div class="col-md-4">
+                <label for="nome" class="form-label">Nome do Produto</label>
+                <InputText id="nome" class="form-control" @bind-Value="filtros.Nome" />
+            </div>
+            <div class="col-md-3">
+                <label for="precoMin" class="form-label">Preço Mínimo</label>
+                <InputNumber id="precoMin" class="form-control" @bind-Value="filtros.PrecoMin"
+                             oninput="if(this.value<0)this.value=null" />
+            </div>
+            <div class="col-md-3">
+                <label for="precoMax" class="form-label">Preço Máximo</label>
+                <InputNumber id="precoMax" class="form-control" @bind-Value="filtros.PrecoMax"
+                             oninput="if(this.value<0)this.value=null" />
+            </div>
+            <div class="col-md-2 d-flex flex-column">
+                <button type="submit" class="btn btn-primary mb-2 w-100">Aplicar Filtros</button>
+                <button type="button" class="btn btn-secondary w-100" @onclick="RemoverFiltros">Remover Filtros</button>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@if (produtos == null)
+{
+    <p><em>Carregando produtos...</em></p>
+}
+else if (!produtos.Any())
+{
+    <p>Nenhum produto encontrado.</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var produto in produtos)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm">
+                    <img src="@produto.ImagemUrl" class="card-img-top" alt="@produto.Nome" style="max-height: 200px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@produto.Nome</h5>
+                        <p class="card-text text-success fw-bold">
+                            @produto.Preco.ToString("C", CultureInfo.GetCultureInfo("pt-BR"))
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <a href="/Produtos/Detalhes/@produto.Id" class="btn btn-primary">Ver Detalhes</a>
+                            <a href="/Produtos/Editar/@produto.Id" class="btn btn-warning">Editar</a>
+                            <a href="/Produtos/Excluir/@produto.Id" class="btn btn-danger">Excluir</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Produto>? produtos;
+    private FiltroProduto filtros = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        produtos = await ProdutoService.ObterTodosAsync();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        try
+        {
+            if (filtros.PrecoMin < 0 || filtros.PrecoMax < 0)
+            {
+                Console.WriteLine("Os preços não podem ser negativos.");
+                return;
+            }
+
+            produtos = await ProdutoService.BuscarComFiltrosAsync(filtros.Nome, filtros.PrecoMin, filtros.PrecoMax);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao aplicar filtros: {ex.Message}");
+        }
+    }
+
+    private async Task RemoverFiltros()
+    {
+        filtros = new FiltroProduto();
+        produtos = await ProdutoService.ObterTodosAsync();
+    }
+
+    public class FiltroProduto
+    {
+        public string? Nome { get; set; }
+        public decimal? PrecoMin { get; set; }
+        public decimal? PrecoMax { get; set; }
+    }
+}

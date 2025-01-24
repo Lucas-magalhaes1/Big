@@ -1,0 +1,96 @@
+@page "/Produtos/Estoque"
+@using Big.Models
+@using Big.Services
+@inject ProdutoService ProdutoService
+@rendermode InteractiveServer
+
+<h3>Gerenciamento de Estoque</h3>
+
+@if (!string.IsNullOrWhiteSpace(mensagemSucesso))
+{
+    <div class="alert alert-success">@mensagemSucesso</div>
+}
+
+<div class="mb-3">
+    <input type="text" class="form-control" placeholder="Buscar por nome" @bind-value="filtroNome" />
+    <button class="btn btn-primary mt-2" @onclick="FiltrarProdutos">Buscar</button>
+</div>
+
+<EditForm Model="@produtos" OnValidSubmit="OnValidSubmitAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Estoque Loja</th>
+                <th>Estoque Centro de Distribuição</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var produto in produtos)
+            {
+                <tr class="@(produto.EstoqueLoja < 10 || produto.EstoqueCentroDistribuicao < 10 ? "table-danger" : "")">
+                    <td>@produto.Nome</td>
+                    <td>
+                        <InputNumber class="form-control" @bind-Value="produto.EstoqueLoja" />
+                    </td>
+                    <td>
+                        <InputNumber class="form-control" @bind-Value="produto.EstoqueCentroDistribuicao" />
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                        <button class="btn btn-secondary" @onclick="() => ReabastecerEstoque(produto, 10)">+10</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</EditForm>
+
+@code {
+    private List<Produto> produtos = new();
+    private string? mensagemSucesso;
+    private string? filtroNome;
+
+    protected override async Task OnInitializedAsync()
+    {
+        produtos = await ProdutoService.ObterTodosAsync();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        try
+        {
+            foreach (var produto in produtos)
+            {
+                await ProdutoService.AtualizarAsync(produto);
+            }
+
+            mensagemSucesso = "Estoque atualizado com sucesso!";
+            StateHasChanged();
+
+            // Oculta a mensagem após 3 segundos
+            await Task.Delay(3000);
+            mensagemSucesso = null;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao atualizar o estoque: {ex.Message}");
+        }
+    }
+
+    private async Task FiltrarProdutos()
+    {
+        produtos = await ProdutoService.BuscarComFiltrosAsync(filtroNome, null, null);
+    }
+
+    private void ReabastecerEstoque(Produto produto, int quantidade)
+    {
+        produto.EstoqueLoja += quantidade;
+        produto.EstoqueCentroDistribuicao += quantidade;
+    }
+}
