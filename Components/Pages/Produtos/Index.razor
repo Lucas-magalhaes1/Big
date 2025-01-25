@@ -2,6 +2,7 @@
 @using System.Globalization
 @using Big.Services
 @inject ProdutoService ProdutoService
+@inject CategoriaService CategoriaService
 @inject NavigationManager Navigation
 @using Big.Models
 @rendermode InteractiveServer
@@ -13,12 +14,11 @@
     <a class="btn btn-outline-secondary btn-sm" href="/Produtos/Estoque">Gerenciar Estoque</a>
 </div>
 
-<!-- Filtros de Pesquisa -->
 <div class="mb-4 p-3 border rounded">
     <h5>Filtros</h5>
     <EditForm Model="@filtros" OnValidSubmit="OnValidSubmitAsync">
         <DataAnnotationsValidator />
-        <div class="row">
+        <div class="row g-3">
             <div class="col-md-4">
                 <label for="nome" class="form-label">Nome do Produto</label>
                 <InputText id="nome" class="form-control" @bind-Value="filtros.Nome" />
@@ -33,8 +33,23 @@
                 <InputNumber id="precoMax" class="form-control" @bind-Value="filtros.PrecoMax"
                              oninput="if(this.value<0)this.value=null" />
             </div>
-            <div class="col-md-2 d-flex flex-column">
-                <button type="submit" class="btn btn-primary mb-2 w-100">Aplicar Filtros</button>
+            <div class="col-md-4">
+                <label for="categoria" class="form-label">Categoria</label>
+                <InputSelect id="categoria" class="form-control" @bind-Value="filtros.CategoriaId">
+                    <option value="">Todas as Categorias</option>
+                    @if (categorias != null && categorias.Any())
+                    {
+                        @foreach (var categoria in categorias)
+                        {
+                            <option value="@categoria.Id">@categoria.Nome</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Aplicar Filtros</button>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
                 <button type="button" class="btn btn-secondary w-100" @onclick="RemoverFiltros">Remover Filtros</button>
             </div>
         </div>
@@ -76,10 +91,12 @@ else
 
 @code {
     private List<Produto>? produtos;
+    private List<Categoria>? categorias;
     private FiltroProduto filtros = new();
 
     protected override async Task OnInitializedAsync()
     {
+        categorias = await CategoriaService.ObterTodasAsync();
         produtos = await ProdutoService.ObterTodosAsync();
     }
 
@@ -93,7 +110,14 @@ else
                 return;
             }
 
-            produtos = await ProdutoService.BuscarComFiltrosAsync(filtros.Nome, filtros.PrecoMin, filtros.PrecoMax);
+            if (filtros.CategoriaId.HasValue)
+            {
+                produtos = await ProdutoService.BuscarPorCategoriaAsync(filtros.CategoriaId.Value);
+            }
+            else
+            {
+                produtos = await ProdutoService.BuscarComFiltrosAsync(filtros.Nome, filtros.PrecoMin, filtros.PrecoMax);
+            }
         }
         catch (Exception ex)
         {
@@ -112,5 +136,6 @@ else
         public string? Nome { get; set; }
         public decimal? PrecoMin { get; set; }
         public decimal? PrecoMax { get; set; }
+        public int? CategoriaId { get; set; }
     }
 }

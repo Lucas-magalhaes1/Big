@@ -31,11 +31,19 @@ namespace Big.Models
 
         [Url(ErrorMessage = "A URL da imagem deve ser válida.")]
         [StringLength(300, ErrorMessage = "A URL da imagem deve ter no máximo 300 caracteres.")]
+        
         public string ImagemUrl { get; set; } = string.Empty;
+        
+        [Required(ErrorMessage = "A categoria é obrigatória.")]
+        public int CategoriaId { get; set; }
+
+        [ForeignKey("CategoriaId")]
+        public Categoria Categoria { get; set; } 
+        
         
         public Produto() { }
         
-        public Produto(string nome, string descricao, decimal preco, int estoqueLoja, int estoqueCentroDistribuicao, string imagemUrl)
+        public Produto(string nome, string descricao, decimal preco, int estoqueLoja, int estoqueCentroDistribuicao, string imagemUrl, int categoriaId)
         {
             Nome = nome;
             Descricao = descricao;
@@ -43,6 +51,7 @@ namespace Big.Models
             EstoqueLoja = estoqueLoja;
             EstoqueCentroDistribuicao = estoqueCentroDistribuicao;
             ImagemUrl = imagemUrl;
+            CategoriaId = categoriaId;
         }
     }
 }

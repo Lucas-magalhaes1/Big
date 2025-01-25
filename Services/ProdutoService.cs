@@ -100,5 +100,17 @@ namespace Big.Services
                 throw new Exception("A URL da imagem é inválida ou inacessível.");
             }
         }
+        public async Task<Produto> ObterPorIdComCategoriaAsync(int id)
+        {
+            return await _context.Produtos.Include(p => p.Categoria).FirstOrDefaultAsync(p => p.Id == id);
+        }
+        
+        public async Task<List<Produto>> BuscarPorCategoriaAsync(int categoriaId)
+        {
+            return await _context.Produtos
+                .Where(p => p.CategoriaId == categoriaId)
+                .Include(p => p.Categoria)
+                .ToListAsync();
+        }
     }
 }

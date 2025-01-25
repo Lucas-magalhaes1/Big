@@ -1,0 +1,62 @@
+@page "/Categorias/Adicionar"
+@using Big.Models
+@using Big.Services
+@inject CategoriaService CategoriaService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>Adicionar Categoria</h3>
+
+@if (mostrarFeedback)
+{
+    <div class="alert alert-success" role="alert">
+        Categoria adicionada com sucesso!
+    </div>
+}
+
+<EditForm Model="@novaCategoria" OnValidSubmit="OnValidSubmitAsync">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label class="form-label">Nome:</label>
+        <InputText @bind-Value="novaCategoria.Nome" class="form-control" />
+        <ValidationMessage For="@(() => novaCategoria.Nome)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descrição:</label>
+        <InputTextArea @bind-Value="novaCategoria.Descricao" class="form-control" />
+        <ValidationMessage For="@(() => novaCategoria.Descricao)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">URL da Imagem:</label>
+        <InputText @bind-Value="novaCategoria.ImagemUrl" class="form-control" />
+        <ValidationMessage For="@(() => novaCategoria.ImagemUrl)" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="/Categorias" class="btn btn-secondary">Cancelar</a>
+</EditForm>
+
+@code {
+    private Categoria novaCategoria = new Categoria();
+    private bool mostrarFeedback = false;
+
+    private async Task OnValidSubmitAsync()
+    {
+        try
+        {
+            await CategoriaService.AdicionarAsync(novaCategoria);
+            mostrarFeedback = true;
+            StateHasChanged();
+
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/Categorias");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao adicionar a categoria: {ex.Message}");
+        }
+    }
+}

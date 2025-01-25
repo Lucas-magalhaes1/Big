@@ -11,9 +11,33 @@
     <div class="alert alert-success">@mensagemSucesso</div>
 }
 
-<div class="mb-3">
-    <input type="text" class="form-control" placeholder="Buscar por nome" @bind-value="filtroNome" />
-    <button class="btn btn-primary mt-2" @onclick="FiltrarProdutos">Buscar</button>
+<div class="mb-4 p-3 border rounded">
+    <h5>Filtros de Pesquisa</h5>
+    <div class="row">
+        <div class="col-md-4">
+            <label for="filtroNome" class="form-label">Nome do Produto</label>
+            <input type="text" id="filtroNome" class="form-control" placeholder="Buscar por nome" @bind-value="filtroNome" />
+        </div>
+        <div class="col-md-3">
+            <label for="estoqueMin" class="form-label">Quantidade Mínima</label>
+            <InputNumber id="estoqueMin" class="form-control" @bind-Value="filtroQuantidadeMinima" />
+        </div>
+        <div class="col-md-3">
+            <label for="estoqueMax" class="form-label">Quantidade Máxima</label>
+            <InputNumber id="estoqueMax" class="form-control" @bind-Value="filtroQuantidadeMaxima" />
+        </div>
+        <div class="col-md-2">
+            <label for="tipoEstoque" class="form-label">Tipo de Estoque</label>
+            <InputSelect id="tipoEstoque" class="form-control" @bind-Value="tipoEstoque">
+                <option value="Loja">Loja</option>
+                <option value="Centro">Centro de Distribuição</option>
+            </InputSelect>
+        </div>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-primary me-2" @onclick="FiltrarProdutos">Aplicar Filtros</button>
+        <button class="btn btn-secondary" @onclick="RemoverFiltros">Remover Filtros</button>
+    </div>
 </div>
 
 <EditForm Model="@produtos" OnValidSubmit="OnValidSubmitAsync">
@@ -54,6 +78,9 @@
     private List<Produto> produtos = new();
     private string? mensagemSucesso;
     private string? filtroNome;
+    private int? filtroQuantidadeMinima;
+    private int? filtroQuantidadeMaxima;
+    private string tipoEstoque = "Loja"; 
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,7 +99,7 @@
             mensagemSucesso = "Estoque atualizado com sucesso!";
             StateHasChanged();
 
-            // Oculta a mensagem após 3 segundos
+        
             await Task.Delay(3000);
             mensagemSucesso = null;
             StateHasChanged();
@@ -85,7 +112,39 @@
 
     private async Task FiltrarProdutos()
     {
-        produtos = await ProdutoService.BuscarComFiltrosAsync(filtroNome, null, null);
+        produtos = await ProdutoService.ObterTodosAsync();
+
+        if (!string.IsNullOrWhiteSpace(filtroNome))
+        {
+            produtos = produtos.Where(p => p.Nome.Contains(filtroNome, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        if (filtroQuantidadeMinima.HasValue || filtroQuantidadeMaxima.HasValue)
+        {
+            produtos = tipoEstoque switch
+            {
+                "Loja" => produtos.Where(p =>
+                    (!filtroQuantidadeMinima.HasValue || p.EstoqueLoja >= filtroQuantidadeMinima) &&
+                    (!filtroQuantidadeMaxima.HasValue || p.EstoqueLoja <= filtroQuantidadeMaxima)).ToList(),
+
+                "Centro" => produtos.Where(p =>
+                    (!filtroQuantidadeMinima.HasValue || p.EstoqueCentroDistribuicao >= filtroQuantidadeMinima) &&
+                    (!filtroQuantidadeMaxima.HasValue || p.EstoqueCentroDistribuicao <= filtroQuantidadeMaxima)).ToList(),
+
+                _ => produtos
+            };
+        }
+    }
+
+    private void RemoverFiltros()
+    {
+        filtroNome = null;
+        filtroQuantidadeMinima = null;
+        filtroQuantidadeMaxima = null;
+        tipoEstoque = "Loja"; 
+        StateHasChanged();
+
+        _ = OnInitializedAsync();
     }
 
     private void ReabastecerEstoque(Produto produto, int quantidade)

@@ -1,0 +1,83 @@
+@page "/Categorias/Editar/{id:int}"
+@using Big.Models
+@using Big.Services
+@inject CategoriaService CategoriaService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>Editar Categoria</h3>
+
+@if (categoria == null)
+{
+    <p>Carregando informações da categoria...</p>
+}
+else
+{
+    @if (mostrarFeedback)
+    {
+        <div class="alert alert-success" role="alert">
+            Categoria atualizada com sucesso!
+        </div>
+    }
+
+    <EditForm Model="@categoria" OnValidSubmit="OnValidSubmitAsync">
+        <DataAnnotationsValidator />
+        
+
+        <div class="mb-3">
+            <label class="form-label">Nome:</label>
+            <InputText @bind-Value="categoria.Nome" class="form-control" />
+            <ValidationMessage For="@(() => categoria.Nome)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Descrição:</label>
+            <InputTextArea @bind-Value="categoria.Descricao" class="form-control" />
+            <ValidationMessage For="@(() => categoria.Descricao)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">URL da Imagem:</label>
+            <InputText @bind-Value="categoria.ImagemUrl" class="form-control" />
+            <ValidationMessage For="@(() => categoria.ImagemUrl)" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a href="/Categorias" class="btn btn-secondary">Cancelar</a>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Categoria? categoria;
+    private bool mostrarFeedback = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categoria = await CategoriaService.ObterPorIdAsync(Id);
+
+        if (categoria == null)
+        {
+            Navigation.NavigateTo("/Categorias");
+        }
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        try
+        {
+            await CategoriaService.AtualizarAsync(categoria);
+            mostrarFeedback = true;
+            StateHasChanged();
+
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/Categorias");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao atualizar a categoria: {ex.Message}");
+        }
+    }
+}

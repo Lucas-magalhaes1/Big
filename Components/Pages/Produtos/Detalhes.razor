@@ -22,6 +22,7 @@ else
             <p><strong>Preço:</strong> @produto.Preco.ToString("C", CultureInfo.GetCultureInfo("pt-BR"))</p>
             <p><strong>Estoque na Loja:</strong> @produto.EstoqueLoja</p>
             <p><strong>Estoque no Centro de Distribuição:</strong> @produto.EstoqueCentroDistribuicao</p>
+            <p><strong>Categoria:</strong> @produto.Categoria?.Nome</p>
             @if (!string.IsNullOrEmpty(produto.ImagemUrl))
             {
                 <p><strong></strong></p>
@@ -41,13 +42,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        produto = await ProdutoService.ObterPorIdAsync(Id);
+        produto = await ProdutoService.ObterPorIdComCategoriaAsync(Id);
     }
 
     private void Voltar()
     {
         Navigation.NavigateTo("/produtos");
     }
-
 }
-

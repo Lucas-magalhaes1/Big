@@ -2,6 +2,7 @@
 @using Big.Models
 @using Big.Services
 @inject ProdutoService ProdutoService
+@inject CategoriaService CategoriaService
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
 
@@ -60,6 +61,18 @@ else
             <ValidationMessage For="@(() => produto.ImagemUrl)" />
         </div>
 
+        <div class="mb-3">
+            <label class="form-label">Categoria:</label>
+            <InputSelect @bind-Value="produto.CategoriaId" class="form-control">
+                <option value="" disabled>Selecione uma categoria</option>
+                @foreach (var categoria in categorias)
+                {
+                    <option value="@categoria.Id">@categoria.Nome</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => produto.CategoriaId)" />
+        </div>
+
         <button type="submit" class="btn btn-success">Salvar</button>
         <a href="/Produtos" class="btn btn-secondary">Cancelar</a>
         <a href="/Produtos/Excluir/@produto.Id" class="btn btn-danger">Excluir</a>
@@ -71,10 +84,12 @@ else
     public int Id { get; set; }
 
     private Produto produto = new Produto();
+    private List<Categoria> categorias = new();
     private bool mostrarFeedback = false;
 
     protected override async Task OnInitializedAsync()
     {
+        categorias = await CategoriaService.ObterTodasAsync();
         produto = await ProdutoService.ObterPorIdAsync(Id);
 
         if (produto == null)
@@ -87,12 +102,16 @@ else
     {
         try
         {
+            if (produto.CategoriaId == null || produto.CategoriaId == 0)
+            {
+                Console.WriteLine("A categoria do produto é obrigatória.");
+                return;
+            }
+
             await ProdutoService.AtualizarAsync(produto);
-            
             mostrarFeedback = true;
-            StateHasChanged();
-            
-            await Task.Delay(1000);
+
+            await Task.Delay(2000);
             Navigation.NavigateTo("/Produtos");
         }
         catch (Exception ex)
