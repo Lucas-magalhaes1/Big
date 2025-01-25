@@ -35,11 +35,14 @@
       <Compile Remove="Migrations\**" />
       <Compile Remove="Data\Migrations\20250120140356_Inicial.cs" />
       <Compile Remove="Data\Migrations\20250120140356_Inicial.Designer.cs" />
-      <Compile Remove="Data\Migrations\ApplicationDbContextModelSnapshot.cs" />
       <Compile Remove="Data\Migrations\20250120142142_Inicial.cs" />
       <Compile Remove="Data\Migrations\20250120142142_Inicial.Designer.cs" />
       <Compile Remove="Data\Migrations\20250121132502_AddProdutoTable.cs" />
       <Compile Remove="Data\Migrations\20250121132502_AddProdutoTable.Designer.cs" />
+      <Compile Remove="Data\Migrations\20250121133451_InitialCreate.cs" />
+      <Compile Remove="Data\Migrations\20250121133451_InitialCreate.Designer.cs" />
+      <Compile Remove="Data\Migrations\20250125011053_AdicionarCategoria.cs" />
+      <Compile Remove="Data\Migrations\20250125011053_AdicionarCategoria.Designer.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -48,10 +51,6 @@
 
     <ItemGroup>
       <Content Remove="Migrations\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Data\Migrations\" />
     </ItemGroup>
 
 </Project>
