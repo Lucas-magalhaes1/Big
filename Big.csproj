@@ -51,6 +51,8 @@
 
     <ItemGroup>
       <Content Remove="Migrations\**" />
+      <Content Remove="Components\Pages\Counter.razor" />
+      <Content Remove="Components\Pages\Weather.razor" />
     </ItemGroup>
 
 </Project>
