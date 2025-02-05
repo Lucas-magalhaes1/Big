@@ -85,8 +85,17 @@ app.UseRouting();
 app.UseAuthentication(); // Middleware de autenticação JWT
 app.UseAuthorization();  // Middleware de autorização
 
+// Adicionar o middleware antifalsificação
+app.UseAntiforgery();
+
 // Mapear Razor Components
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+// Seed de usuários e roles
+using (var scope = app.Services.CreateScope())
+{
+    await IdentitySeeder.SeedRolesAndUsersAsync(scope.ServiceProvider);
+}
 
 app.Run();
