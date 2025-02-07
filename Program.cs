@@ -1,11 +1,13 @@
 using System.Globalization;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Big.Components;
 using Big.Data;
 using Big.Services;
+using Big.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,16 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// Configurar Identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+    {
+        options.Password.RequiredLength = 6;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+    })
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 // Configurar JWT Authentication
 var jwtKey = builder.Configuration["JwtSettings:Secret"] ?? "";
@@ -54,6 +66,7 @@ builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<ClienteService>();
 
+
 var app = builder.Build();
 
 // Configurar o pipeline de requisição
@@ -74,8 +87,17 @@ app.UseRouting();
 app.UseAuthentication(); // Middleware de autenticação JWT
 app.UseAuthorization();  // Middleware de autorização
 
+// Adicionar o middleware antifalsificação
+app.UseAntiforgery();
+
 // Mapear Razor Components
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 
-app.Run();
+// Seed de usuários e roles
+using (var scope = app.Services.CreateScope())
+{
+    await IdentitySeeder.SeedRolesAndUsersAsync(scope.ServiceProvider);
+}
+
+app.Run(); 

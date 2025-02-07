@@ -11,6 +11,7 @@
         <None Update="Data\app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
         <None Remove="Migrations\**" />
         <None Remove="Components\Account\**" />
+        <None Remove="Components\Pages\Cliente" />
     </ItemGroup>
 
     <ItemGroup>

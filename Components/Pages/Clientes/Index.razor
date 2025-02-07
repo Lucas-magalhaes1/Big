@@ -1,0 +1,213 @@
+@page "/Clientes"
+@using Big.Models
+@using Big.Services
+@inject ClienteService ClienteService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>Gerenciamento de Clientes</h3>
+
+<!-- Filtros de Pesquisa -->
+<div class="mb-4 p-3 border rounded">
+    <h5>Filtros</h5>
+    <EditForm Model="@filtros" OnValidSubmit="AplicarFiltrosAsync">
+        <DataAnnotationsValidator />
+        <div class="row">
+            <div class="col-md-3">
+                <label for="nome" class="form-label">Nome</label>
+                <InputText id="nome" class="form-control" @bind-Value="filtros.Nome" />
+            </div>
+            <div class="col-md-3">
+                <label for="documento" class="form-label">CPF/CNPJ</label>
+                <InputText id="documento" class="form-control" @bind-Value="filtros.Documento" />
+            </div>
+            <div class="col-md-3">
+                <label for="endereco" class="form-label">Endereço</label>
+                <InputText id="endereco" class="form-control" @bind-Value="filtros.Endereco" />
+            </div>
+            <div class="col-md-3">
+                <label for="dataCadastro" class="form-label">Data de Cadastro</label>
+                <InputDate id="dataCadastro" class="form-control" @bind-Value="filtros.DataCadastro" />
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary w-100">Aplicar Filtros</button>
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="btn btn-secondary w-100" @onclick="RemoverFiltros">Limpar Filtros</button>
+            </div>
+            <div class="col-md-4">
+                <button type="button" class="btn @(exibirInativos ? "btn-info" : "btn-warning") w-100" 
+                        @onclick="AlternarExibicaoClientes">
+                    @(exibirInativos ? "Ativos" : "Inativos")
+                </button>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+<!-- Botões de Exportação -->
+<div class="mb-4 d-flex justify-content-between">
+    <a class="btn btn-success" href="/Clientes/Adicionar">Adicionar Cliente</a>
+    <div>
+        <button class="btn btn-outline-primary me-2" @onclick="ExportarCsv">Exportar CSV</button>
+        <button class="btn btn-outline-danger" @onclick="ExportarPdf">Exportar PDF</button>
+    </div>
+</div>
+
+@if (clientes == null)
+{
+    <p><em>Carregando clientes...</em></p>
+}
+else if (!clientes.Any())
+{
+    <p>Nenhum cliente encontrado.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+                <th>CPF/CNPJ</th>
+                <th>Data de Cadastro</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cliente in clientes)
+            {
+                <tr class="@(cliente.Ativo ? "" : "table-danger")">
+                    <td>@cliente.Nome</td>
+                    <td>@cliente.Email</td>
+                    <td>@cliente.Telefone</td>
+                    <td>@cliente.Endereco</td>
+                    <td>@cliente.Documento</td>
+                    <td>@cliente.DataCadastro.ToShortDateString()</td>
+                    <td>
+                        <span class="badge @(cliente.Ativo ? "bg-success" : "bg-secondary")">
+                            @(cliente.Ativo ? "Ativo" : "Inativo")
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn @(cliente.Ativo ? "btn-warning" : "btn-success") btn-sm"
+                                @onclick="() => AlternarStatus(cliente)">
+                            @(cliente.Ativo ? "Inativar" : "Ativar")
+                        </button>
+                        <a href="/Clientes/Editar/@cliente.Id" class="btn btn-primary btn-sm">Editar</a>
+                        <a href="/Clientes/Excluir/@cliente.Id" class="btn btn-danger btn-sm">
+                            Excluir
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <nav>
+        <ul class="pagination">
+            @for (int i = 1; i <= totalPaginas; i++)
+            {
+                <li class="page-item @(paginaAtual == i ? "active" : "")">
+                    <button class="page-link" @onclick="() => MudarPagina(i)">@i</button>
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@code {
+    private List<Cliente>? clientes;
+    private FiltroCliente filtros = new();
+    private int paginaAtual = 1;
+    private int totalPaginas = 1;
+    private const int tamanhoPagina = 10;
+    private bool exibirInativos = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarClientes();
+    }
+
+    private async Task CarregarClientes()
+    {
+        var todosClientes = await ClienteService.ObterTodosAsync();
+        
+        clientes = todosClientes.Where(c => c.Ativo != exibirInativos).ToList();
+
+        clientes = AplicarFiltros(clientes);
+        totalPaginas = (int)Math.Ceiling((double)clientes.Count / tamanhoPagina);
+        clientes = clientes.Skip((paginaAtual - 1) * tamanhoPagina).Take(tamanhoPagina).ToList();
+    }
+
+    private List<Cliente> AplicarFiltros(List<Cliente> todosClientes)
+    {
+        return todosClientes
+            .Where(c =>
+                (string.IsNullOrEmpty(filtros.Nome) || c.Nome.Contains(filtros.Nome, StringComparison.OrdinalIgnoreCase)) &&
+                (string.IsNullOrEmpty(filtros.Documento) || c.Documento.Contains(filtros.Documento)) &&
+                (string.IsNullOrEmpty(filtros.Endereco) || c.Endereco.Contains(filtros.Endereco, StringComparison.OrdinalIgnoreCase)) &&
+                (!filtros.DataCadastro.HasValue || c.DataCadastro.Date == filtros.DataCadastro.Value.Date))
+            .ToList();
+    }
+
+    private async Task AplicarFiltrosAsync()
+    {
+        await CarregarClientes();
+    }
+
+    private async Task RemoverFiltros()
+    {
+        filtros = new FiltroCliente();
+        await CarregarClientes();
+    }
+
+    private async Task MudarPagina(int pagina)
+    {
+        paginaAtual = pagina;
+        await CarregarClientes();
+    }
+
+    private async Task ExcluirCliente(int id)
+    {
+        await ClienteService.ExcluirAsync(id);
+        await CarregarClientes();
+    }
+
+    private async Task AlternarStatus(Cliente cliente)
+    {
+        cliente.Ativo = !cliente.Ativo;
+        await ClienteService.AtualizarAsync(cliente);
+        await CarregarClientes();
+    }
+
+    private async Task AlternarExibicaoClientes()
+    {
+        exibirInativos = !exibirInativos;
+        await CarregarClientes();
+    }
+
+    private async Task ExportarCsv()
+    {
+        Console.WriteLine("Exportando CSV...");
+    }
+
+    private async Task ExportarPdf()
+    {
+        Console.WriteLine("Exportando PDF...");
+    }
+
+    public class FiltroCliente
+    {
+        public string? Nome { get; set; }
+        public string? Documento { get; set; }
+        public string? Endereco { get; set; }
+        public DateTime? DataCadastro { get; set; }
+    }
+}

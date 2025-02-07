@@ -1,0 +1,98 @@
+@page "/Clientes/Adicionar"
+@using Big.Models
+@using Big.Services
+@inject ClienteService ClienteService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>Adicionar Cliente</h3>
+
+@if (mostrarFeedback)
+{
+    <div class="alert alert-success" role="alert">
+        Cliente cadastrado com sucesso!
+    </div>
+}
+
+<EditForm Model="@novoCliente" OnValidSubmit="OnValidSubmitAsync">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label class="form-label">Nome:</label>
+        <InputText @bind-Value="novoCliente.Nome" class="form-control" />
+        <ValidationMessage For="@(() => novoCliente.Nome)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Email:</label>
+        <InputText @bind-Value="novoCliente.Email" class="form-control" />
+        <ValidationMessage For="@(() => novoCliente.Email)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Telefone:</label>
+        <InputText @bind-Value="novoCliente.Telefone" class="form-control" />
+        <ValidationMessage For="@(() => novoCliente.Telefone)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Endereço:</label>
+        <InputTextArea @bind-Value="novoCliente.Endereco" class="form-control" />
+        <ValidationMessage For="@(() => novoCliente.Endereco)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">CPF ou CNPJ:</label>
+        <InputText @bind-Value="novoCliente.Documento" class="form-control" />
+        <ValidationMessage For="@(() => novoCliente.Documento)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Data de Cadastro:</label>
+        <InputDate @bind-Value="novoCliente.DataCadastro" class="form-control" />
+        <ValidationMessage For="@(() => novoCliente.DataCadastro)" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <a href="/Clientes" class="btn btn-secondary">Cancelar</a>
+</EditForm>
+
+@code {
+    private Cliente novoCliente = new Cliente();
+    private bool mostrarFeedback = false;
+
+    private async Task OnValidSubmitAsync()
+    {
+        try
+        {
+            // Verifica se todos os campos obrigatórios estão preenchidos
+            if (string.IsNullOrWhiteSpace(novoCliente.Nome) ||
+                string.IsNullOrWhiteSpace(novoCliente.Email) ||
+                string.IsNullOrWhiteSpace(novoCliente.Telefone) ||
+                string.IsNullOrWhiteSpace(novoCliente.Documento) ||
+                string.IsNullOrWhiteSpace(novoCliente.Endereco))
+            {
+                Console.WriteLine("Todos os campos obrigatórios devem ser preenchidos.");
+                return;
+            }
+
+            // Definir a data de cadastro como a atual se não for preenchida
+            if (novoCliente.DataCadastro == default)
+            {
+                novoCliente.DataCadastro = DateTime.Now;
+            }
+
+            await ClienteService.AdicionarAsync(novoCliente);
+            mostrarFeedback = true;
+            StateHasChanged();
+
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/Clientes");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao adicionar o cliente: {ex.Message}");
+        }
+    }
+}
+    

@@ -1,0 +1,81 @@
+@page "/Clientes/Editar/{id:int}"
+@using Big.Models
+@using Big.Services
+@inject ClienteService ClienteService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>Editar Cliente</h3>
+
+@if (mostrarFeedback)
+{
+    <div class="alert alert-success" role="alert">
+        Cliente atualizado com sucesso!
+    </div>
+}
+
+@if (cliente == null)
+{
+    <p>Carregando cliente...</p>
+}
+else
+{
+    <EditForm Model="@cliente" OnValidSubmit="OnValidSubmitAsync">
+        <DataAnnotationsValidator />
+
+        <div class="mb-3">
+            <label class="form-label">Nome:</label>
+            <InputText @bind-Value="cliente.Nome" class="form-control" />
+            <ValidationMessage For="@(() => cliente.Nome)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email:</label>
+            <InputText @bind-Value="cliente.Email" class="form-control" />
+            <ValidationMessage For="@(() => cliente.Email)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Telefone:</label>
+            <InputText @bind-Value="cliente.Telefone" class="form-control" />
+            <ValidationMessage For="@(() => cliente.Telefone)" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Endereço:</label>
+            <InputTextArea @bind-Value="cliente.Endereco" class="form-control" />
+            <ValidationMessage For="@(() => cliente.Endereco)" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a href="/Clientes" class="btn btn-secondary">Cancelar</a>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Cliente? cliente;
+    private bool mostrarFeedback = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cliente = await ClienteService.ObterPorIdAsync(id);
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        try
+        {
+            await ClienteService.AtualizarAsync(cliente);
+            mostrarFeedback = true;
+            StateHasChanged();
+
+            await Task.Delay(2000);
+            Navigation.NavigateTo("/Clientes");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao editar o cliente: {ex.Message}");
+        }
+    }
+}

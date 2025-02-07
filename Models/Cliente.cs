@@ -27,5 +27,7 @@ namespace Big.Models
 
         [DataType(DataType.Date)]
         public DateTime DataCadastro { get; set; } = DateTime.Now;
+        
+        public bool Ativo { get; set; } = true;
     }
 }
