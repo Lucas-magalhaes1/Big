@@ -23,9 +23,12 @@ namespace Big.Services
 
         public async Task<Cliente> ObterPorIdAsync(int id)
         {
-            return await _context.Clientes.FindAsync(id);
+            return await _context.Clientes
+                .Include(c => c.Pedidos)
+                .ThenInclude(p => p.Produtos) 
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
-
+        
         public async Task AdicionarAsync(Cliente cliente)
         {
             await _context.Clientes.AddAsync(cliente);

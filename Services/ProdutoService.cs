@@ -112,5 +112,15 @@ namespace Big.Services
                 .Include(p => p.Categoria)
                 .ToListAsync();
         }
+        public async Task<List<Pedido>> ObterPedidosPorClienteAsync(int clienteId, int quantidade = 5)
+        {
+            return await _context.Pedidos
+                .Where(p => p.ClienteId == clienteId)
+                .OrderByDescending(p => p.DataPedido) // Ordena pelos mais recentes
+                .Take(quantidade) // Limita ao número desejado
+                .Include(p => p.Produtos)
+                .ThenInclude(pp => pp.Produto) // Inclui os produtos dos pedidos
+                .ToListAsync();
+        }
     }
 }
