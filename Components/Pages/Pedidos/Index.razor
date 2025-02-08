@@ -1,0 +1,110 @@
+@page "/Pedidos"
+@using Big.Models
+@using Big.Services
+@inject PedidoService PedidoService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>Gerenciamento de Pedidos</h3>
+
+<!-- Botão para adicionar um novo pedido -->
+<div class="mb-3">
+    <a class="btn btn-success" href="/Pedidos/Adicionar">Novo Pedido</a>
+</div>
+
+@if (pedidos == null)
+{
+    <p><em>Carregando pedidos...</em></p>
+}
+else if (!pedidos.Any())
+{
+    <p>Nenhum pedido encontrado.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Data do Pedido</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pedido in pedidos)
+            {
+                <tr>
+                    <td>@pedido.Id</td>
+                    <td>@(pedido.Cliente != null ? pedido.Cliente.Nome : "Cliente não encontrado")</td>
+                    <td>@pedido.DataPedido.ToShortDateString()</td>
+                    <td>
+                        <span class="badge @(pedido.Status == "Aprovado" ? "bg-success" : "bg-warning")">
+                            @pedido.Status
+                        </span>
+                    </td>
+                    <td>@pedido.Total.ToString("C")</td>
+                    <td>
+                        <a href="/Pedidos/Detalhes/@pedido.Id" class="btn btn-info btn-sm">Detalhes</a>
+                        <a href="/Pedidos/Editar/@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
+                        <button class="btn btn-danger btn-sm" @onclick="() => ConfirmarExclusao(pedido.Id)">Excluir</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<!-- Modal de Confirmação de Exclusão -->
+@if (pedidoParaExcluir != null)
+{
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" @onclick="CancelarExclusao"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir o pedido <strong>@pedidoParaExcluir.Id</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" @onclick="ExcluirPedido">Confirmar</button>
+                    <button class="btn btn-secondary" @onclick="CancelarExclusao">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Pedido>? pedidos;
+    private Pedido? pedidoParaExcluir;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pedidos = await PedidoService.ObterTodosAsync() ?? new List<Pedido>();
+    }
+
+    private void ConfirmarExclusao(int pedidoId)
+    {
+        pedidoParaExcluir = pedidos?.FirstOrDefault(p => p.Id == pedidoId);
+    }
+
+    private async Task ExcluirPedido()
+    {
+        if (pedidoParaExcluir != null)
+        {
+            await PedidoService.ExcluirAsync(pedidoParaExcluir.Id);
+            pedidos?.Remove(pedidoParaExcluir);
+            pedidoParaExcluir = null;
+        }
+    }
+
+    private void CancelarExclusao()
+    {
+        pedidoParaExcluir = null;
+    }
+}

@@ -1,0 +1,67 @@
+@page "/Pedidos/Detalhes/{id:int}"
+@using Big.Models
+@using Big.Services
+@inject PedidoService PedidoService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>Detalhes do Pedido</h3>
+
+@if (pedido == null)
+{
+    <p>Carregando pedido...</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Pedido #@pedido.Id</h5>
+            <p><strong>Cliente:</strong> @pedido.Cliente.Nome</p>
+            <p><strong>Data do Pedido:</strong> @pedido.DataPedido.ToShortDateString()</p>
+            <p><strong>Status:</strong> <span class="badge @(pedido.Status == "Aprovado" ? "bg-success" : "bg-warning")">@pedido.Status</span></p>
+            <p><strong>Total:</strong> @pedido.Total.ToString("C")</p>
+        </div>
+    </div>
+
+    <h4 class="mt-4">Produtos no Pedido</h4>
+    @if (pedido.Produtos != null && pedido.Produtos.Any())
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Preço Unitário</th>
+                <th>Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in pedido.Produtos)
+            {
+                <tr>
+                    <td>@item.Produto.Nome</td>
+                    <td>@item.Quantidade</td>
+                    <td>@item.PrecoUnitario.ToString("C")</td>
+                    <td>@(item.Quantidade * item.PrecoUnitario).ToString("C")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Nenhum produto foi adicionado a este pedido.</p>
+    }
+
+    <a href="/Pedidos" class="btn btn-secondary mt-3">Voltar</a>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Pedido? pedido;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pedido = await PedidoService.ObterPorIdAsync(id);
+    }
+}

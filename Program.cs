@@ -65,6 +65,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<ClienteService>();
+builder.Services.AddScoped<PedidoService>();
 
 
 var app = builder.Build();
