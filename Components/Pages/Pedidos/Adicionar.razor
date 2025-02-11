@@ -5,56 +5,80 @@
 @inject ClienteService ClienteService
 @inject ProdutoService ProdutoService
 @inject NavigationManager Navigation
+@inject CategoriaService CategoriaService
 @rendermode InteractiveServer
 
 <h3>Adicionar Pedido</h3>
 
-<EditForm Model="@novoPedido" OnValidSubmit="AdicionarPedidoAsync">
-    <DataAnnotationsValidator />
+<div class="mb-4">
+    <h5>Cliente</h5>
+    @if (clientesFiltrados == null)
+    {
+        <p>Carregando clientes...</p>
+    }
+    else
+    {
+        <div class="input-group mb-2">
+            <InputText @bind-Value="filtroCliente" class="form-control" placeholder="Buscar cliente pelo nome..." />
+            <button class="btn btn-outline-primary" @onclick="FiltrarClientes">Buscar</button>
+        </div>
+        <InputSelect @bind-Value="novoPedido.ClienteId" class="form-control">
+            <option value="" disabled selected>Selecione um cliente</option>
+            @foreach (var cliente in clientesFiltrados)
+            {
+                <option value="@cliente.Id">@cliente.Nome</option>
+            }
+        </InputSelect>
+    }
+</div>
 
-    <!-- Seleção de Cliente -->
-    <div class="mb-3">
-        <label class="form-label">Cliente:</label>
-        @if (clientes == null)
-        {
-            <p>Carregando clientes...</p>
-        }
-        else
-        {
-            <InputSelect @bind-Value="novoPedido.ClienteId" class="form-control">
-                <option value="" disabled selected>Selecione um cliente</option>
-                @foreach (var cliente in clientes)
+<div class="mb-4">
+    <h5>Produtos Disponíveis</h5>
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <InputText @bind-Value="filtroProduto" class="form-control" placeholder="Buscar produto pelo nome..." />
+        </div>
+        <div class="col-md-4">
+            <InputSelect @bind-Value="filtroCategoria" class="form-control">
+                <option value="" disabled selected>Filtrar por categoria</option>
+                @foreach (var categoria in categorias)
                 {
-                    <option value="@cliente.Id">@cliente.Nome</option>
+                    <option value="@categoria.Id">@categoria.Nome</option>
                 }
             </InputSelect>
-        }
-    </div>
-
-    <!-- Seleção de Produtos -->
-    <div class="mb-3">
-        <label class="form-label">Adicionar Produtos:</label>
-        @if (produtos == null)
-        {
-            <p>Carregando produtos...</p>
-        }
-        else
-        {
-            <InputSelect @bind-Value="produtoSelecionadoId" class="form-control">
-                <option value="" disabled selected>Selecione um produto</option>
-                @foreach (var produto in produtos)
-                {
-                    <option value="@produto.Id">@produto.Nome (@produto.Preco.ToString("C"))</option>
-                }
-            </InputSelect>
-        }
-        <div class="mt-2 d-flex">
-            <InputNumber @bind-Value="quantidadeSelecionada" class="form-control me-2" placeholder="Quantidade" />
-            <button type="button" class="btn btn-primary" @onclick="AdicionarProduto">Adicionar</button>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" @onclick="FiltrarProdutos">Aplicar</button>
         </div>
     </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Preço</th>
+                <th>Estoque</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var produto in produtosFiltrados)
+            {
+                <tr>
+                    <td>@produto.Nome</td>
+                    <td>@produto.Preco.ToString("C")</td>
+                    <td>@produto.EstoqueCentroDistribuicao</td>
 
-    <!-- Lista de Produtos no Pedido -->
+                    <td>
+                        <button class="btn btn-success btn-sm" @onclick="() => AdicionarProduto(produto)">Adicionar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="mb-4">
+    <h5>Produtos no Pedido</h5>
     <table class="table" style="@(produtosPedido.Any() ? "display: table;" : "display: none;")">
         <thead>
             <tr>
@@ -70,7 +94,9 @@
             {
                 <tr>
                     <td>@item.Produto.Nome</td>
-                    <td>@item.Quantidade</td>
+                    <td>
+                        <InputNumber class="form-control" @bind-Value="item.Quantidade" @onchange="AtualizarCarrinho" />
+                    </td>
                     <td>@item.PrecoUnitario.ToString("C")</td>
                     <td>@(item.Quantidade * item.PrecoUnitario).ToString("C")</td>
                     <td>
@@ -80,51 +106,82 @@
             }
         </tbody>
     </table>
+    <h5 class="text-end">Total do Pedido: @novoPedido.Total.ToString("C")</h5>
+</div>
 
-    <h5>Total do Pedido: @novoPedido.Total.ToString("C")</h5>
-
-    <button type="submit" class="btn btn-success">Salvar Pedido</button>
+<div class="d-flex justify-content-between">
+    <button class="btn btn-success" @onclick="AdicionarPedidoAsync">Salvar Pedido</button>
     <a href="/Pedidos" class="btn btn-secondary">Cancelar</a>
-</EditForm>
+</div>
 
 @code {
     private Pedido novoPedido = new Pedido();
     private List<Cliente>? clientes = new();
-    private List<Produto>? produtos = new();
-    private List<ProdutoPedido> produtosPedido = new();
+    private List<Cliente> clientesFiltrados = new();
+    private string filtroCliente = "";
 
-    private int? produtoSelecionadoId;
-    private int quantidadeSelecionada = 1;
+    private List<Produto>? produtos = new();
+    private List<Produto> produtosFiltrados = new();
+    private List<ProdutoPedido> produtosPedido = new();
+    private List<Categoria>? categorias = new();
+    private string filtroProduto = "";
+    private int? filtroCategoria;
 
     protected override async Task OnInitializedAsync()
     {
         clientes = await ClienteService.ObterTodosAsync() ?? new List<Cliente>();
         produtos = await ProdutoService.ObterTodosAsync() ?? new List<Produto>();
+        categorias = await CategoriaService.ObterTodasAsync(); 
+        clientesFiltrados = clientes.ToList();
+        produtosFiltrados = produtos.ToList();
     }
 
-    private void AdicionarProduto()
+    private void FiltrarClientes()
     {
-        if (produtoSelecionadoId.HasValue && quantidadeSelecionada > 0)
+        clientesFiltrados = string.IsNullOrWhiteSpace(filtroCliente)
+            ? clientes.ToList()
+            : clientes.Where(c => c.Nome.Contains(filtroCliente, StringComparison.OrdinalIgnoreCase)).ToList();
+    }
+
+    private void FiltrarProdutos()
+    {
+        produtosFiltrados = produtos
+            .Where(p =>
+                (string.IsNullOrWhiteSpace(filtroProduto) || p.Nome.Contains(filtroProduto, StringComparison.OrdinalIgnoreCase)) &&
+                (!filtroCategoria.HasValue || p.CategoriaId == filtroCategoria))
+            .ToList();
+    }
+
+    private void AdicionarProduto(Produto produto)
+    {
+        if (produto.EstoqueCentroDistribuicao <= 0) return;
+
+        var existente = produtosPedido.FirstOrDefault(p => p.ProdutoId == produto.Id);
+        if (existente != null)
         {
-            var produto = produtos.FirstOrDefault(p => p.Id == produtoSelecionadoId);
-            if (produto != null)
-            {
-                var itemPedido = new ProdutoPedido
-                {
-                    ProdutoId = produto.Id,
-                    Produto = produto,
-                    Quantidade = quantidadeSelecionada,
-                    PrecoUnitario = produto.Preco
-                };
-                produtosPedido.Add(itemPedido);
-                AtualizarTotal();
-            }
+            existente.Quantidade++;
         }
+        else
+        {
+            produtosPedido.Add(new ProdutoPedido
+            {
+                ProdutoId = produto.Id,
+                Produto = produto,
+                Quantidade = 1,
+                PrecoUnitario = produto.Preco
+            });
+        }
+        AtualizarTotal();
     }
 
     private void RemoverProduto(ProdutoPedido item)
     {
         produtosPedido.Remove(item);
+        AtualizarTotal();
+    }
+
+    private void AtualizarCarrinho()
+    {
         AtualizarTotal();
     }
 
@@ -135,15 +192,9 @@
 
     private async Task AdicionarPedidoAsync()
     {
-        if (clientes == null || clientes.Count == 0)
+        if (produtosPedido.Count == 0 || novoPedido.ClienteId == 0)
         {
-            Console.WriteLine("Erro: Nenhum cliente disponível.");
-            return;
-        }
-
-        if (produtosPedido.Count == 0)
-        {
-            Console.WriteLine("Erro: Nenhum produto adicionado.");
+            Console.WriteLine("Erro: Preencha todos os campos.");
             return;
         }
 

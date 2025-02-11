@@ -7,57 +7,103 @@
 
 <h3>Gerenciamento de Pedidos</h3>
 
-<!-- Botão para adicionar um novo pedido -->
+
+<div class="mb-4 p-3 border rounded">
+    <h5>Filtros</h5>
+    <EditForm Model="@filtros" OnValidSubmit="AplicarFiltrosAsync">
+        <DataAnnotationsValidator />
+        <div class="row">
+            <div class="col-md-3">
+                <label class="form-label">Nome do Cliente</label>
+                <InputText class="form-control" @bind-Value="filtros.NomeCliente" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Data Inicial</label>
+                <InputDate class="form-control" @bind-Value="filtros.DataInicial" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Data Final</label>
+                <InputDate class="form-control" @bind-Value="filtros.DataFinal" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Status</label>
+                <InputSelect class="form-control" @bind-Value="filtros.Status">
+                    <option value="">Todos</option>
+                    <option value="Aprovado">Aprovado</option>
+                    <option value="Aguardando">Aguardando</option>
+                    <option value="Rejeitado">Rejeitado</option>
+                    <option value="Cancelado">Cancelado</option>
+                </InputSelect>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Valor Mínimo</label>
+                <InputNumber class="form-control" @bind-Value="filtros.ValorMinimo" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Valor Máximo</label>
+                <InputNumber class="form-control" @bind-Value="filtros.ValorMaximo" />
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary w-100">Aplicar Filtros</button>
+            </div>
+            <div class="col-md-6">
+                <button type="button" class="btn btn-secondary w-100" @onclick="RemoverFiltros">Limpar Filtros</button>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
 <div class="mb-3">
     <a class="btn btn-success" href="/Pedidos/Adicionar">Novo Pedido</a>
 </div>
 
-@if (pedidos == null)
-{
-    <p><em>Carregando pedidos...</em></p>
-}
-else if (!pedidos.Any())
+@if (pedidosAgrupados.Count == 0)
 {
     <p>Nenhum pedido encontrado.</p>
 }
 else
 {
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Data do Pedido</th>
-                <th>Status</th>
-                <th>Total</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var pedido in pedidos)
-            {
-                <tr>
-                    <td>@pedido.Id</td>
-                    <td>@(pedido.Cliente != null ? pedido.Cliente.Nome : "Cliente não encontrado")</td>
-                    <td>@pedido.DataPedido.ToShortDateString()</td>
-                    <td>
-                        <span class="badge @(pedido.Status == "Aprovado" ? "bg-success" : "bg-warning")">
-                            @pedido.Status
-                        </span>
-                    </td>
-                    <td>@pedido.Total.ToString("C")</td>
-                    <td>
-                        <a href="/Pedidos/Detalhes/@pedido.Id" class="btn btn-info btn-sm">Detalhes</a>
-                        <a href="/Pedidos/Editar/@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
-                        <button class="btn btn-danger btn-sm" @onclick="() => ConfirmarExclusao(pedido.Id)">Excluir</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        @foreach (var grupo in pedidosAgrupados)
+        {
+            <h5 class="mt-4">Pedidos de @grupo.Key.ToShortDateString()</h5>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pedido in grupo.Value)
+                    {
+                        <tr>
+                            <td>@pedido.Id</td>
+                            <td>@(pedido.Cliente != null ? pedido.Cliente.Nome : "Cliente não encontrado")</td>
+                            <td>
+                                <span class="badge @(pedido.Status == "Aprovado" ? "bg-success" : pedido.Status == "Cancelado" ? "bg-danger" : pedido.Status == "Rejeitado" ? "bg-danger" : "bg-warning")">
+                                    @pedido.Status
+                                </span>
+                            </td>
+                            <td>@pedido.Total.ToString("C")</td>
+                            <td>
+                                <a href="/Pedidos/Detalhes/@pedido.Id" class="btn btn-info btn-sm">Detalhes</a>
+                                <a href="/Pedidos/Editar/@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
+                                <button class="btn btn-danger btn-sm" @onclick="() => ConfirmarExclusao(pedido.Id)">Excluir</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
 }
 
-<!-- Modal de Confirmação de Exclusão -->
 @if (pedidoParaExcluir != null)
 {
     <div class="modal fade show d-block" tabindex="-1">
@@ -81,11 +127,48 @@ else
 
 @code {
     private List<Pedido>? pedidos;
+    private Dictionary<DateTime, List<Pedido>> pedidosAgrupados = new();
     private Pedido? pedidoParaExcluir;
+    private FiltroPedido filtros = new();
 
     protected override async Task OnInitializedAsync()
     {
-        pedidos = await PedidoService.ObterTodosAsync() ?? new List<Pedido>();
+        await CarregarPedidos();
+    }
+
+    private async Task CarregarPedidos()
+    {
+        var todosPedidos = await PedidoService.ObterTodosAsync();
+        pedidos = AplicarFiltros(todosPedidos);
+
+        pedidosAgrupados = pedidos
+            .GroupBy(p => p.DataPedido.Date)
+            .OrderByDescending(g => g.Key)
+            .ToDictionary(g => g.Key, g => g.ToList());
+    }
+
+    private List<Pedido> AplicarFiltros(List<Pedido> todosPedidos)
+    {
+        return todosPedidos
+            .Where(p =>
+                (string.IsNullOrEmpty(filtros.NomeCliente) || (p.Cliente != null && p.Cliente.Nome.Contains(filtros.NomeCliente, StringComparison.OrdinalIgnoreCase))) &&
+                (!filtros.DataInicial.HasValue || p.DataPedido.Date >= filtros.DataInicial.Value.Date) &&
+                (!filtros.DataFinal.HasValue || p.DataPedido.Date <= filtros.DataFinal.Value.Date) &&
+                (string.IsNullOrEmpty(filtros.Status) || p.Status == filtros.Status) &&
+                (!filtros.ValorMinimo.HasValue || p.Total >= filtros.ValorMinimo.Value) &&
+                (!filtros.ValorMaximo.HasValue || p.Total <= filtros.ValorMaximo.Value))
+            .ToList();
+    }
+
+    private async Task AplicarFiltrosAsync()
+    {
+        await CarregarPedidos();
+    }
+
+    private async Task RemoverFiltros()
+    {
+        filtros = new FiltroPedido();
+        await CarregarPedidos();
     }
 
     private void ConfirmarExclusao(int pedidoId)
@@ -98,7 +181,7 @@ else
         if (pedidoParaExcluir != null)
         {
             await PedidoService.ExcluirAsync(pedidoParaExcluir.Id);
-            pedidos?.Remove(pedidoParaExcluir);
+            await CarregarPedidos();
             pedidoParaExcluir = null;
         }
     }
@@ -106,5 +189,15 @@ else
     private void CancelarExclusao()
     {
         pedidoParaExcluir = null;
+    }
+
+    public class FiltroPedido
+    {
+        public string? NomeCliente { get; set; }
+        public DateTime? DataInicial { get; set; }
+        public DateTime? DataFinal { get; set; }
+        public string? Status { get; set; }
+        public decimal? ValorMinimo { get; set; }
+        public decimal? ValorMaximo { get; set; }
     }
 }
