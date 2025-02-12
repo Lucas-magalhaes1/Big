@@ -62,6 +62,7 @@
       <Content Remove="Components\Pages\Weather.razor" />
       <Content Remove="Components\Account\**" />
       <Content Remove="Components\Pages\Auth.razor" />
+      <Content Remove="Components\Pages\Gestão\PedidoEditar.razor" />
     </ItemGroup>
 
     <ItemGroup>

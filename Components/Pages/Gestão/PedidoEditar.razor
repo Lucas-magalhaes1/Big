@@ -1,0 +1,154 @@
+@page "/Gestao/Editar/{id:int}"
+@using Big.Models
+@using Big.Services
+@inject PedidoService PedidoService
+@inject ClienteService ClienteService
+@inject ProdutoService ProdutoService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<h3>Editar Pedido</h3>
+
+@if (pedido == null)
+{
+    <p>Carregando pedido...</p>
+}
+else
+{
+    <EditForm Model="@pedido" OnValidSubmit="AtualizarPedidoAsync">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <!-- Seleção de Cliente -->
+        <div class="mb-3">
+            <label class="form-label">Cliente:</label>
+            <InputSelect class="form-control" @bind-Value="pedido.ClienteId">
+                @foreach (var cliente in clientes)
+                {
+                    <option value="@cliente.Id">@cliente.Nome</option>
+                }
+            </InputSelect>
+        </div>
+
+        <!-- Seleção de Produtos -->
+        <div class="mb-3">
+            <label class="form-label">Adicionar Produtos:</label>
+            <InputSelect @bind-Value="produtoSelecionadoId" class="form-control">
+                <option value="" disabled selected>Selecione um produto</option>
+                @foreach (var produto in produtos)
+                {
+                    <option value="@produto.Id">@produto.Nome (@produto.Preco.ToString("C"))</option>
+                }
+            </InputSelect>
+            <div class="mt-2 d-flex">
+                <InputNumber @bind-Value="quantidadeSelecionada" class="form-control me-2" placeholder="Quantidade" />
+                <button type="button" class="btn btn-primary" @onclick="AdicionarProduto">Adicionar</button>
+            </div>
+        </div>
+
+        <!-- Lista de Produtos no Pedido -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Preço Unitário</th>
+                    <th>Subtotal</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in produtosPedido)
+                {
+                    <tr>
+                        <td>@item.Produto.Nome</td>
+                        <td>@item.Quantidade</td>
+                        <td>@item.PrecoUnitario.ToString("C")</td>
+                        <td>@(item.Quantidade * item.PrecoUnitario).ToString("C")</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" @onclick="() => RemoverProduto(item)">Remover</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h5>Total do Pedido: @pedido.Total.ToString("C")</h5>
+
+        <!-- Status do Pedido -->
+        <div class="mb-3">
+            <label class="form-label">Status:</label>
+            <InputSelect class="form-control" @bind-Value="pedido.Status">
+                <option value="Aguardando">Aguardando</option>
+                <option value="Aprovado">Aprovado</option>
+                <option value="Rejeitado">Rejeitado</option>
+            </InputSelect>
+        </div>
+
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a href="/Pedidos" class="btn btn-secondary">Cancelar</a>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Pedido? pedido;
+    private List<Cliente>? clientes = new();
+    private List<Produto>? produtos = new();
+    private List<ProdutoPedido> produtosPedido = new();
+
+    private int? produtoSelecionadoId;
+    private int quantidadeSelecionada = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pedido = await PedidoService.ObterPorIdAsync(id);
+        clientes = await ClienteService.ObterTodosAsync() ?? new List<Cliente>();
+        produtos = await ProdutoService.ObterTodosAsync() ?? new List<Produto>();
+
+        if (pedido != null)
+        {
+            produtosPedido = pedido.Produtos.ToList();
+        }
+    }
+
+    private void AdicionarProduto()
+    {
+        if (produtoSelecionadoId.HasValue && quantidadeSelecionada > 0)
+        {
+            var produto = produtos.FirstOrDefault(p => p.Id == produtoSelecionadoId);
+            if (produto != null)
+            {
+                var itemPedido = new ProdutoPedido
+                {
+                    ProdutoId = produto.Id,
+                    Produto = produto,
+                    Quantidade = quantidadeSelecionada,
+                    PrecoUnitario = produto.Preco
+                };
+                produtosPedido.Add(itemPedido);
+                AtualizarTotal();
+            }
+        }
+    }
+
+    private void RemoverProduto(ProdutoPedido item)
+    {
+        produtosPedido.Remove(item);
+        AtualizarTotal();
+    }
+
+    private void AtualizarTotal()
+    {
+        pedido.Total = produtosPedido.Sum(p => p.Quantidade * p.PrecoUnitario);
+    }
+
+    private async Task AtualizarPedidoAsync()
+    {
+        if (pedido != null)
+        {
+            await PedidoService.AtualizarAsync(pedido);
+            Navigation.NavigateTo("/Pedidos");
+        }
+    }
+}
