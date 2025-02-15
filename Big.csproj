@@ -49,6 +49,8 @@
       <Compile Remove="Components\Account\**" />
       <Compile Remove="Data\Migrations\20250125011943_Inicial.cs" />
       <Compile Remove="Data\Migrations\20250125011943_Inicial.Designer.cs" />
+      <Compile Remove="Data\Migrations\20250208005304_CriarTabelaPedidos.cs" />
+      <Compile Remove="Data\Migrations\20250208005304_CriarTabelaPedidos.Designer.cs" />
     </ItemGroup>
 
     <ItemGroup>
