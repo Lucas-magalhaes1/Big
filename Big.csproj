@@ -30,6 +30,7 @@
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" />
+        <PackageReference Include="MudBlazor" Version="8.2.0" />
     </ItemGroup>
 
     <ItemGroup>
