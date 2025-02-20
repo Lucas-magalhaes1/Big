@@ -1,7 +1,111 @@
 ﻿@page "/"
+@using MudBlazor
 
-<PageTitle>Home</PageTitle>
+<div class="container mt-4">
+    <h2>Bem-vindo, <span class="text-primary">Lucas Ferreira</span>!</h2>
+    <p class="text-muted">Aqui está o resumo do seu desempenho no mês.</p>
+    
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <MudCard Class="bg-light text-dark p-3">
+                <MudCardContent>
+                    <h5>📦 Pedidos no mês</h5>
+                    <p class="fs-4">@mockPedidos.Count</p>
+                </MudCardContent>
+            </MudCard>
+        </div>
+        <div class="col-md-3">
+            <MudCard Class="bg-success text-white p-3">
+                <MudCardContent>
+                    <h5>💰 Total Faturado</h5>
+                    <p class="fs-4">@mockPedidos.Sum(p => p.Total).ToString("C")</p>
+                </MudCardContent>
+            </MudCard>
+        </div>
+        <div class="col-md-3">
+            <MudCard Class="bg-primary text-white p-3">
+                <MudCardContent>
+                    <h5>✔ Pedidos Aprovados</h5>
+                    <p class="fs-4">@mockPedidos.Count(p => p.Status == "Aprovado")</p>
+                </MudCardContent>
+            </MudCard>
+        </div>
+        <div class="col-md-3">
+            <MudCard Class="bg-danger text-white p-3">
+                <MudCardContent>
+                    <h5>❌ Pedidos Rejeitados</h5>
+                    <p class="fs-4">@mockPedidos.Count(p => p.Status == "Rejeitado")</p>
+                </MudCardContent>
+            </MudCard>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <MudPaper Class="p-4">
+                <h5>📊 Evolução de Vendas</h5>
+                <MudChart ChartType="ChartType.StackedBar" ChartSeries="@seriesVendas" XAxisLabels="@labelsMeses" Width="100%" Height="350px"></MudChart>
+            </MudPaper>
+        </div>
+        <div class="col-md-4">
+            <MudPaper Class="p-4">
+                <h5>📋 Últimos Pedidos</h5>
+                <ul class="list-group">
+                    @foreach (var pedido in mockPedidos.OrderByDescending(p => p.DataPedido).Take(5))
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            @pedido.ClienteNome
+                            <span class="badge @(pedido.Status == "Aprovado" ? "bg-success" : "bg-danger")">
+                                @pedido.Status
+                            </span>
+                        </li>
+                    }
+                </ul>
+            </MudPaper>
+            <MudPaper Class="p-4 mt-3 text-center">
+                <h5>💳 Ticket Médio por Venda</h5>
+                <p class="fs-4 text-primary"><strong>@MediaTicket.ToString("C")</strong></p>
+            </MudPaper>
+        </div>
+    </div>
+</div>
 
-<h1>Big</h1>
+@code {
+    private List<PedidoMock> mockPedidos = new();
+    private List<ChartSeries> seriesVendas = new();
+    private string[] labelsMeses = { "Jul", "Ago", "Set", "Out", "Nov" };
+    
+    protected override async Task OnInitializedAsync()
+    {
+        GerarDadosMock();
+    }
+    
+    private void GerarDadosMock()
+    {
+        var random = new Random();
+        mockPedidos = new List<PedidoMock>
+        {
+            new PedidoMock { ClienteNome = "Ana Souza", DataPedido = DateTime.Now, Status = "Aprovado", Total = random.Next(500, 1000) },
+            new PedidoMock { ClienteNome = "Carlos Mendes", DataPedido = DateTime.Now, Status = "Rejeitado", Total = random.Next(50, 200) },
+            new PedidoMock { ClienteNome = "Mariana Costa", DataPedido = DateTime.Now, Status = "Aprovado", Total = random.Next(600, 1200) },
+            new PedidoMock { ClienteNome = "João Lima", DataPedido = DateTime.Now, Status = "Aprovado", Total = random.Next(700, 1300) },
+            new PedidoMock { ClienteNome = "Pedro Silva", DataPedido = DateTime.Now, Status = "Rejeitado", Total = random.Next(50, 200) },
+        };
 
-New app.
+        seriesVendas = new List<ChartSeries>
+        {
+            new ChartSeries { Name = "Pedidos Rejeitados", Data = new double[] { random.Next(1, 10), random.Next(1, 10), random.Next(1, 10), random.Next(1, 10), random.Next(1, 10) },  },
+            new ChartSeries { Name = "Pedidos Aprovados", Data = new double[] { random.Next(30, 60), random.Next(30, 60), random.Next(30, 60), random.Next(30, 60), random.Next(30, 60) }, }
+        };
+    }
+    
+    private decimal MediaTicket => mockPedidos.Count > 0 ? mockPedidos.Sum(p => p.Total) / mockPedidos.Count : 0;
+    
+    private class PedidoMock
+    {
+        public string ClienteNome { get; set; }
+        public DateTime DataPedido { get; set; }
+        public string Status { get; set; }
+        public decimal Total { get; set; }
+    }
+}
