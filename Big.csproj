@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>aspnet-Big-1de836a5-355d-46ad-af85-15f9f5eccb61</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,6 +13,7 @@
         <None Remove="Migrations\**" />
         <None Remove="Components\Account\**" />
         <None Remove="Components\Pages\Cliente" />
+        <None Remove="Tests\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -52,11 +54,13 @@
       <Compile Remove="Data\Migrations\20250125011943_Inicial.Designer.cs" />
       <Compile Remove="Data\Migrations\20250208005304_CriarTabelaPedidos.cs" />
       <Compile Remove="Data\Migrations\20250208005304_CriarTabelaPedidos.Designer.cs" />
+      <Compile Remove="Tests\**" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Remove="Migrations\**" />
       <EmbeddedResource Remove="Components\Account\**" />
+      <EmbeddedResource Remove="Tests\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -66,6 +70,7 @@
       <Content Remove="Components\Account\**" />
       <Content Remove="Components\Pages\Auth.razor" />
       <Content Remove="Components\Pages\Gestão\PedidoEditar.razor" />
+      <Content Remove="Tests\**" />
     </ItemGroup>
 
     <ItemGroup>

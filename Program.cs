@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using MudBlazor.Services;
 using Big.Components;
 using Big.Data;
+using Big.Middleware;
 using Big.Services;
 using Big.Models;
 
@@ -80,7 +81,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseRouting();
 app.UseAuthentication(); 
 app.UseAuthorization();  
