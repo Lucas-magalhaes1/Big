@@ -1,0 +1,19 @@
+@page "/Clientes/Excluir/{id:int}"
+@inherits Big.Pages.Clientes.ExcluirClienteBase
+@rendermode InteractiveServer
+
+<h3>Excluir Cliente</h3>
+
+@if (cliente == null)
+{
+    <p>Carregando cliente...</p>
+}
+else
+{
+    <div class="alert alert-danger">
+        <h5>Tem certeza que deseja excluir o cliente <strong>@cliente.Nome</strong>?</h5>
+    </div>
+
+    <button class="btn btn-danger" @onclick="ExcluirClienteAsync">Confirmar Exclusão</button>
+    <a href="/Clientes" class="btn btn-secondary">Cancelar</a>
+}
