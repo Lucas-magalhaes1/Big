@@ -1,9 +1,6 @@
 @page "/Produtos/Detalhes/{id:int}"
 @using System.Globalization
-@using Big.Models
-@using Big.Services
-@inject ProdutoService ProdutoService
-@inject NavigationManager Navigation
+@inherits Big.Pages.Produtos.DetalhesProdutoBase
 
 <h3>Detalhes do Produto</h3>
 
@@ -33,20 +30,4 @@ else
             <a href="/Produtos" class="btn btn-secondary" @onclick="Voltar">Voltar</a>
         </div>
     </div>
-}
-
-@code {
-    [Parameter] public int Id { get; set; }
-
-    private Produto produto;
-
-    protected override async Task OnInitializedAsync()
-    {
-        produto = await ProdutoService.ObterPorIdComCategoriaAsync(Id);
-    }
-
-    private void Voltar()
-    {
-        Navigation.NavigateTo("/produtos");
-    }
 }

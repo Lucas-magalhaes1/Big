@@ -1,7 +1,5 @@
 @page "/Produtos/Estoque"
-@using Big.Models
-@using Big.Services
-@inject ProdutoService ProdutoService
+@inherits Big.Pages.Produtos.EstoqueBase
 @rendermode InteractiveServer
 
 <h3>Gerenciamento de Estoque</h3>
@@ -15,20 +13,20 @@
     <h5>Filtros de Pesquisa</h5>
     <div class="row">
         <div class="col-md-4">
-            <label for="filtroNome" class="form-label">Nome do Produto</label>
-            <input type="text" id="filtroNome" class="form-control" placeholder="Buscar por nome" @bind-value="filtroNome" />
+            <label class="form-label">Nome do Produto</label>
+            <InputText class="form-control" placeholder="Buscar por nome" @bind-Value="filtroNome" />
         </div>
         <div class="col-md-3">
-            <label for="estoqueMin" class="form-label">Quantidade Mínima</label>
-            <InputNumber id="estoqueMin" class="form-control" @bind-Value="filtroQuantidadeMinima" />
+            <label class="form-label">Quantidade Mínima</label>
+            <InputNumber class="form-control" @bind-Value="filtroQuantidadeMinima" />
         </div>
         <div class="col-md-3">
-            <label for="estoqueMax" class="form-label">Quantidade Máxima</label>
-            <InputNumber id="estoqueMax" class="form-control" @bind-Value="filtroQuantidadeMaxima" />
+            <label class="form-label">Quantidade Máxima</label>
+            <InputNumber class="form-control" @bind-Value="filtroQuantidadeMaxima" />
         </div>
         <div class="col-md-2">
-            <label for="tipoEstoque" class="form-label">Tipo de Estoque</label>
-            <InputSelect id="tipoEstoque" class="form-control" @bind-Value="tipoEstoque">
+            <label class="form-label">Tipo de Estoque</label>
+            <InputSelect class="form-control" @bind-Value="tipoEstoque">
                 <option value="Loja">Loja</option>
                 <option value="Centro">Centro de Distribuição</option>
             </InputSelect>
@@ -73,83 +71,3 @@
         </tbody>
     </table>
 </EditForm>
-
-@code {
-    private List<Produto> produtos = new();
-    private string? mensagemSucesso;
-    private string? filtroNome;
-    private int? filtroQuantidadeMinima;
-    private int? filtroQuantidadeMaxima;
-    private string tipoEstoque = "Loja"; 
-
-    protected override async Task OnInitializedAsync()
-    {
-        produtos = await ProdutoService.ObterTodosAsync();
-    }
-
-    private async Task OnValidSubmitAsync()
-    {
-        try
-        {
-            foreach (var produto in produtos)
-            {
-                await ProdutoService.AtualizarAsync(produto);
-            }
-
-            mensagemSucesso = "Estoque atualizado com sucesso!";
-            StateHasChanged();
-
-        
-            await Task.Delay(3000);
-            mensagemSucesso = null;
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao atualizar o estoque: {ex.Message}");
-        }
-    }
-
-    private async Task FiltrarProdutos()
-    {
-        produtos = await ProdutoService.ObterTodosAsync();
-
-        if (!string.IsNullOrWhiteSpace(filtroNome))
-        {
-            produtos = produtos.Where(p => p.Nome.Contains(filtroNome, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
-        if (filtroQuantidadeMinima.HasValue || filtroQuantidadeMaxima.HasValue)
-        {
-            produtos = tipoEstoque switch
-            {
-                "Loja" => produtos.Where(p =>
-                    (!filtroQuantidadeMinima.HasValue || p.EstoqueLoja >= filtroQuantidadeMinima) &&
-                    (!filtroQuantidadeMaxima.HasValue || p.EstoqueLoja <= filtroQuantidadeMaxima)).ToList(),
-
-                "Centro" => produtos.Where(p =>
-                    (!filtroQuantidadeMinima.HasValue || p.EstoqueCentroDistribuicao >= filtroQuantidadeMinima) &&
-                    (!filtroQuantidadeMaxima.HasValue || p.EstoqueCentroDistribuicao <= filtroQuantidadeMaxima)).ToList(),
-
-                _ => produtos
-            };
-        }
-    }
-
-    private void RemoverFiltros()
-    {
-        filtroNome = null;
-        filtroQuantidadeMinima = null;
-        filtroQuantidadeMaxima = null;
-        tipoEstoque = "Loja"; 
-        StateHasChanged();
-
-        _ = OnInitializedAsync();
-    }
-
-    private void ReabastecerEstoque(Produto produto, int quantidade)
-    {
-        produto.EstoqueLoja += quantidade;
-        produto.EstoqueCentroDistribuicao += quantidade;
-    }
-}

@@ -1,9 +1,5 @@
 @page "/Produtos/Editar/{id:int}"
-@using Big.Models
-@using Big.Services
-@inject ProdutoService ProdutoService
-@inject CategoriaService CategoriaService
-@inject NavigationManager Navigation
+@inherits Big.Pages.Produtos.EditarProdutoBase
 @rendermode InteractiveServer
 
 <h3>Editar Produto</h3>
@@ -23,7 +19,6 @@ else
 
     <EditForm Model="@produto" OnValidSubmit="OnValidSubmitAsync">
         <DataAnnotationsValidator />
-        <ValidationSummary />
 
         <div class="mb-3">
             <label class="form-label">Nome:</label>
@@ -77,46 +72,4 @@ else
         <a href="/Produtos" class="btn btn-secondary">Cancelar</a>
         <a href="/Produtos/Excluir/@produto.Id" class="btn btn-danger">Excluir</a>
     </EditForm>
-}
-
-@code {
-    [Parameter]
-    public int Id { get; set; }
-
-    private Produto produto = new Produto();
-    private List<Categoria> categorias = new();
-    private bool mostrarFeedback = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        categorias = await CategoriaService.ObterTodasAsync();
-        produto = await ProdutoService.ObterPorIdAsync(Id);
-
-        if (produto == null)
-        {
-            Navigation.NavigateTo("/Produtos");
-        }
-    }
-
-    private async Task OnValidSubmitAsync()
-    {
-        try
-        {
-            if (produto.CategoriaId == null || produto.CategoriaId == 0)
-            {
-                Console.WriteLine("A categoria do produto é obrigatória.");
-                return;
-            }
-
-            await ProdutoService.AtualizarAsync(produto);
-            mostrarFeedback = true;
-
-            await Task.Delay(2000);
-            Navigation.NavigateTo("/Produtos");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao atualizar o produto: {ex.Message}");
-        }
-    }
 }

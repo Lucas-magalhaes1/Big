@@ -1,10 +1,6 @@
 @page "/Produtos"
 @using System.Globalization
-@using Big.Services
-@inject ProdutoService ProdutoService
-@inject CategoriaService CategoriaService
-@inject NavigationManager Navigation
-@using Big.Models
+@inherits Big.Pages.Produtos.ProdutosBase
 @rendermode InteractiveServer
 
 <h3>Catálogo de Produtos</h3>
@@ -20,22 +16,20 @@
         <DataAnnotationsValidator />
         <div class="row g-3">
             <div class="col-md-4">
-                <label for="nome" class="form-label">Nome do Produto</label>
-                <InputText id="nome" class="form-control" @bind-Value="filtros.Nome" />
+                <label class="form-label">Nome do Produto</label>
+                <InputText class="form-control" @bind-Value="filtros.Nome" />
             </div>
             <div class="col-md-3">
-                <label for="precoMin" class="form-label">Preço Mínimo</label>
-                <InputNumber id="precoMin" class="form-control" @bind-Value="filtros.PrecoMin"
-                             oninput="if(this.value<0)this.value=null" />
+                <label class="form-label">Preço Mínimo</label>
+                <InputNumber class="form-control" @bind-Value="filtros.PrecoMin" />
             </div>
             <div class="col-md-3">
-                <label for="precoMax" class="form-label">Preço Máximo</label>
-                <InputNumber id="precoMax" class="form-control" @bind-Value="filtros.PrecoMax"
-                             oninput="if(this.value<0)this.value=null" />
+                <label class="form-label">Preço Máximo</label>
+                <InputNumber class="form-control" @bind-Value="filtros.PrecoMax" />
             </div>
             <div class="col-md-4">
-                <label for="categoria" class="form-label">Categoria</label>
-                <InputSelect id="categoria" class="form-control" @bind-Value="filtros.CategoriaId">
+                <label class="form-label">Categoria</label>
+                <InputSelect class="form-control" @bind-Value="filtros.CategoriaId">
                     <option value="">Todas as Categorias</option>
                     @if (categorias != null && categorias.Any())
                     {
@@ -87,55 +81,4 @@ else
             </div>
         }
     </div>
-}
-
-@code {
-    private List<Produto>? produtos;
-    private List<Categoria>? categorias;
-    private FiltroProduto filtros = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        categorias = await CategoriaService.ObterTodasAsync();
-        produtos = await ProdutoService.ObterTodosAsync();
-    }
-
-    private async Task OnValidSubmitAsync()
-    {
-        try
-        {
-            if (filtros.PrecoMin < 0 || filtros.PrecoMax < 0)
-            {
-                Console.WriteLine("Os preços não podem ser negativos.");
-                return;
-            }
-
-            if (filtros.CategoriaId.HasValue)
-            {
-                produtos = await ProdutoService.BuscarPorCategoriaAsync(filtros.CategoriaId.Value);
-            }
-            else
-            {
-                produtos = await ProdutoService.BuscarComFiltrosAsync(filtros.Nome, filtros.PrecoMin, filtros.PrecoMax);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao aplicar filtros: {ex.Message}");
-        }
-    }
-
-    private async Task RemoverFiltros()
-    {
-        filtros = new FiltroProduto();
-        produtos = await ProdutoService.ObterTodosAsync();
-    }
-
-    public class FiltroProduto
-    {
-        public string? Nome { get; set; }
-        public decimal? PrecoMin { get; set; }
-        public decimal? PrecoMax { get; set; }
-        public int? CategoriaId { get; set; }
-    }
 }
