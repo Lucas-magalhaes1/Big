@@ -1,8 +1,5 @@
 @page "/GestaoPedidos"
-@using Big.Models
-@using Big.Services
-@inject PedidoService PedidoService
-@inject NavigationManager Navigation
+@inherits Big.Pages.GestaoPedidos.GestaoPedidosBase
 @rendermode InteractiveServer
 
 <h3>Gestão de Pedidos</h3>
@@ -86,15 +83,11 @@ else
                             <button class="btn btn-success btn-sm" @onclick="@(() => AlterarStatus(pedido, "Aprovado"))">
                                 ✔ Aprovar
                             </button>
-
                             <button class="btn btn-danger btn-sm" @onclick="@(() => AlterarStatus(pedido, "Rejeitado"))">
                                 ❌ Rejeitar
                             </button>
-
                             <a href="/Pedidos/Editar/@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
-
                             <a href="/Gestao/Pedidos/Detalhes/@pedido.Id" class="btn btn-info btn-sm">👁 Ver Detalhes</a>
-
                             <button class="btn btn-secondary btn-sm" @onclick="@(() => GerarNota(pedido))">
                                 📄 Nota
                             </button>
@@ -104,84 +97,4 @@ else
             </tbody>
         </table>
     }
-}
-
-@code {
-    private List<Pedido>? pedidos;
-    private List<IGrouping<DateTime, Pedido>> pedidosAgrupados;
-    private FiltrosPedido filtros = new();
-    
-    private List<string> vendedoresMock = new() { "João Silva", "Maria Oliveira", "Carlos Souza", "Ana Lima", "Pedro Ferreira" };
-    private Dictionary<int, string> vendedoresAssociados = new(); 
-
-    protected override async Task OnInitializedAsync()
-    {
-        await CarregarPedidos();
-    }
-
-    private async Task CarregarPedidos()
-    {
-        pedidos = await PedidoService.ObterTodosAsync() ?? new List<Pedido>();
-        
-        var random = new Random();
-        foreach (var pedido in pedidos)
-        {
-            if (!vendedoresAssociados.ContainsKey(pedido.Id))
-            {
-                vendedoresAssociados[pedido.Id] = vendedoresMock[random.Next(vendedoresMock.Count)];
-            }
-        }
-
-        AplicarFiltros();
-    }
-
-    private string ObterVendedorAleatorio(int pedidoId)
-    {
-        return vendedoresAssociados.ContainsKey(pedidoId) ? vendedoresAssociados[pedidoId] : "Não definido";
-    }
-
-    private void AplicarFiltros()
-    {
-        var resultado = pedidos.Where(p =>
-            (string.IsNullOrEmpty(filtros.Cliente) || p.Cliente.Nome.Contains(filtros.Cliente, StringComparison.OrdinalIgnoreCase)) &&
-            (string.IsNullOrEmpty(filtros.Status) || p.Status == filtros.Status) &&
-            (!filtros.DataPedido.HasValue || p.DataPedido.Date == filtros.DataPedido.Value.Date) &&
-            (!filtros.ValorMinimo.HasValue || p.Total >= filtros.ValorMinimo)
-        ).OrderByDescending(p => p.DataPedido).ToList();
-
-        pedidosAgrupados = resultado.GroupBy(p => p.DataPedido.Date).ToList();
-    }
-
-    private async Task AplicarFiltrosAsync()
-    {
-        AplicarFiltros();
-    }
-
-    private async Task RemoverFiltros()
-    {
-        filtros = new FiltrosPedido();
-        AplicarFiltros();
-    }
-
-    private async Task AlterarStatus(Pedido pedido, string novoStatus)
-    {
-        await PedidoService.AtualizarStatusAsync(pedido.Id, novoStatus);
-        pedido.Status = novoStatus;
-        StateHasChanged();
-    }
-
-    private async Task GerarNota(Pedido pedido)
-    {
-        Console.WriteLine($"Gerando nota para pedido #{pedido.Id}...");
-        //Feature futura 
-    }
-
-    private class FiltrosPedido
-    {
-        public string? Cliente { get; set; }
-        public string? Status { get; set; }
-        public DateTime? DataPedido { get; set; }
-        public decimal? ValorMinimo { get; set; }
-    }
-    
 }

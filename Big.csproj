@@ -117,4 +117,8 @@
       <_ContentIncludedByDefault Remove="Components\Account\Shared\StatusMessage.razor" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Components\Pages\Usuario\" />
+    </ItemGroup>
+
 </Project>

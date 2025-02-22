@@ -1,8 +1,5 @@
 @page "/Pedidos/Detalhes/{id:int}"
-@using Big.Models
-@using Big.Services
-@inject PedidoService PedidoService
-@inject NavigationManager Navigation
+@inherits Big.Pages.Pedidos.DetalhesPedidoBase
 @rendermode InteractiveServer
 
 <h3>Detalhes do Pedido</h3>
@@ -54,14 +51,4 @@ else
     }
 
     <a href="/Pedidos" class="btn btn-secondary mt-3">Voltar</a>
-}
-
-@code {
-    [Parameter] public int id { get; set; }
-    private Pedido? pedido;
-
-    protected override async Task OnInitializedAsync()
-    {
-        pedido = await PedidoService.ObterPorIdAsync(id);
-    }
 }

@@ -1,0 +1,19 @@
+@page "/Pedidos/Excluir/{id:int}"
+@inherits Big.Pages.Pedidos.ExcluirPedidoBase
+@rendermode InteractiveServer
+
+<h3>Excluir Pedido</h3>
+
+@if (pedido == null)
+{
+    <p>Carregando pedido...</p>
+}
+else
+{
+    <div class="alert alert-danger">
+        <h5>Tem certeza que deseja excluir o pedido #@pedido.Id?</h5>
+    </div>
+
+    <button class="btn btn-danger" @onclick="ExcluirPedidoAsync">Confirmar Exclusão</button>
+    <a href="/Pedidos" class="btn btn-secondary">Cancelar</a>
+}

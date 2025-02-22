@@ -1,9 +1,5 @@
 @page "/Pedidos/Editar/{id:int}"
-@using Big.Models
-@using Big.Services
-@inject PedidoService PedidoService
-@inject ProdutoService ProdutoService
-@inject NavigationManager Navigation
+@inherits Big.Pages.Pedidos.EditarPedidoBase
 @rendermode InteractiveServer
 
 <h3>Editar Pedido</h3>
@@ -18,7 +14,6 @@ else
         <DataAnnotationsValidator />
         <ValidationSummary />
 
-        
         <div class="mb-3">
             <label class="form-label">Cliente:</label>
             <InputText class="form-control" @bind-Value="pedido.Cliente.Nome" Disabled="true" />
@@ -29,7 +24,6 @@ else
             <InputDate class="form-control" @bind-Value="pedido.DataPedido" Disabled="true" />
         </div>
 
-        
         <div class="mb-3">
             <label class="form-label">Adicionar Produtos:</label>
             <div class="d-flex">
@@ -44,7 +38,7 @@ else
                 <button type="button" class="btn btn-primary" @onclick="AdicionarProduto">Adicionar</button>
             </div>
         </div>
-        
+
         <h5>Produtos no Pedido:</h5>
         <table class="table table-striped">
             <thead>
@@ -74,71 +68,10 @@ else
                 }
             </tbody>
         </table>
-        
+
         <h5>Total do Pedido: @pedido.Total.ToString("C")</h5>
 
         <button type="submit" class="btn btn-success">Salvar Alterações</button>
         <a href="/Pedidos" class="btn btn-secondary">Cancelar</a>
     </EditForm>
-}
-
-@code {
-    [Parameter] public int id { get; set; }
-    private Pedido? pedido;
-    private List<Produto>? produtosDisponiveis;
-    private int? produtoSelecionadoId;
-    private int quantidadeSelecionada = 1;
-
-    protected override async Task OnInitializedAsync()
-    {
-        pedido = await PedidoService.ObterPorIdAsync(id);
-        produtosDisponiveis = await ProdutoService.ObterTodosAsync() ?? new List<Produto>();
-        
-        if (pedido == null)
-        {
-            pedido = new Pedido { Produtos = new List<ProdutoPedido>() };
-        }
-    }
-
-    private void AdicionarProduto()
-    {
-        if (produtoSelecionadoId.HasValue && quantidadeSelecionada > 0)
-        {
-            var produto = produtosDisponiveis.FirstOrDefault(p => p.Id == produtoSelecionadoId);
-            if (produto != null)
-            {
-                var itemPedido = new ProdutoPedido
-                {
-                    PedidoId = pedido.Id,
-                    ProdutoId = produto.Id,
-                    Produto = produto,
-                    Quantidade = quantidadeSelecionada,
-                    PrecoUnitario = produto.Preco
-                };
-
-                pedido.Produtos.Add(itemPedido);
-                AtualizarTotal();
-            }
-        }
-    }
-
-    private void RemoverProduto(ProdutoPedido item)
-    {
-        pedido.Produtos.Remove(item);
-        AtualizarTotal();
-    }
-
-    private void AtualizarTotal()
-    {
-        pedido.Total = pedido.Produtos.Sum(p => p.Quantidade * p.PrecoUnitario);
-    }
-
-    private async Task AtualizarPedidoAsync()
-    {
-        if (pedido != null)
-        {
-            await PedidoService.AtualizarAsync(pedido);
-            Navigation.NavigateTo("/Pedidos");
-        }
-    }
 }

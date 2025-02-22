@@ -1,11 +1,5 @@
 @page "/Pedidos/Adicionar"
-@using Big.Models
-@using Big.Services
-@inject PedidoService PedidoService
-@inject ClienteService ClienteService
-@inject ProdutoService ProdutoService
-@inject NavigationManager Navigation
-@inject CategoriaService CategoriaService
+@inherits Big.Pages.Pedidos.AdicionarPedidoBase
 @rendermode InteractiveServer
 
 <h3>Adicionar Pedido</h3>
@@ -67,7 +61,6 @@
                     <td>@produto.Nome</td>
                     <td>@produto.Preco.ToString("C")</td>
                     <td>@produto.EstoqueCentroDistribuicao</td>
-
                     <td>
                         <button class="btn btn-success btn-sm" @onclick="() => AdicionarProduto(produto)">Adicionar</button>
                     </td>
@@ -113,92 +106,3 @@
     <button class="btn btn-success" @onclick="AdicionarPedidoAsync">Salvar Pedido</button>
     <a href="/Pedidos" class="btn btn-secondary">Cancelar</a>
 </div>
-
-@code {
-    private Pedido novoPedido = new Pedido();
-    private List<Cliente>? clientes = new();
-    private List<Cliente> clientesFiltrados = new();
-    private string filtroCliente = "";
-
-    private List<Produto>? produtos = new();
-    private List<Produto> produtosFiltrados = new();
-    private List<ProdutoPedido> produtosPedido = new();
-    private List<Categoria>? categorias = new();
-    private string filtroProduto = "";
-    private int? filtroCategoria;
-
-    protected override async Task OnInitializedAsync()
-    {
-        clientes = await ClienteService.ObterTodosAsync() ?? new List<Cliente>();
-        produtos = await ProdutoService.ObterTodosAsync() ?? new List<Produto>();
-        categorias = await CategoriaService.ObterTodasAsync(); 
-        clientesFiltrados = clientes.ToList();
-        produtosFiltrados = produtos.ToList();
-    }
-
-    private void FiltrarClientes()
-    {
-        clientesFiltrados = string.IsNullOrWhiteSpace(filtroCliente)
-            ? clientes.ToList()
-            : clientes.Where(c => c.Nome.Contains(filtroCliente, StringComparison.OrdinalIgnoreCase)).ToList();
-    }
-
-    private void FiltrarProdutos()
-    {
-        produtosFiltrados = produtos
-            .Where(p =>
-                (string.IsNullOrWhiteSpace(filtroProduto) || p.Nome.Contains(filtroProduto, StringComparison.OrdinalIgnoreCase)) &&
-                (!filtroCategoria.HasValue || p.CategoriaId == filtroCategoria))
-            .ToList();
-    }
-
-    private void AdicionarProduto(Produto produto)
-    {
-        if (produto.EstoqueCentroDistribuicao <= 0) return;
-
-        var existente = produtosPedido.FirstOrDefault(p => p.ProdutoId == produto.Id);
-        if (existente != null)
-        {
-            existente.Quantidade++;
-        }
-        else
-        {
-            produtosPedido.Add(new ProdutoPedido
-            {
-                ProdutoId = produto.Id,
-                Produto = produto,
-                Quantidade = 1,
-                PrecoUnitario = produto.Preco
-            });
-        }
-        AtualizarTotal();
-    }
-
-    private void RemoverProduto(ProdutoPedido item)
-    {
-        produtosPedido.Remove(item);
-        AtualizarTotal();
-    }
-
-    private void AtualizarCarrinho()
-    {
-        AtualizarTotal();
-    }
-
-    private void AtualizarTotal()
-    {
-        novoPedido.Total = produtosPedido.Sum(p => p.Quantidade * p.PrecoUnitario);
-    }
-
-    private async Task AdicionarPedidoAsync()
-    {
-        if (produtosPedido.Count == 0 || novoPedido.ClienteId == 0)
-        {
-            Console.WriteLine("Erro: Preencha todos os campos.");
-            return;
-        }
-
-        await PedidoService.AdicionarAsync(novoPedido, produtosPedido);
-        Navigation.NavigateTo("/Pedidos");
-    }
-}
