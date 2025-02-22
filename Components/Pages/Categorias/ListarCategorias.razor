@@ -1,8 +1,5 @@
 @page "/Categorias"
-@using Big.Models
-@using Big.Services
-@inject CategoriaService CategoriaService
-@inject NavigationManager Navigation
+@inherits Big.Pages.Categorias.ListarCategoriasBase
 
 <h3>Catálogo de Categorias</h3>
 
@@ -39,13 +36,4 @@ else
             </div>
         }
     </div>
-}
-
-@code {
-    private List<Categoria>? categorias;
-
-    protected override async Task OnInitializedAsync()
-    {
-        categorias = await CategoriaService.ObterTodasAsync();
-    }
 }

@@ -1,0 +1,22 @@
+@page "/Categorias/Excluir/{id:int}"
+@inherits Big.Pages.Categorias.ExcluirCategoriaBase
+@rendermode InteractiveServer
+
+<h3>Excluir Categoria</h3>
+
+@if (categoria == null)
+{
+    <p>Carregando informações da categoria...</p>
+}
+else
+{
+    <div class="alert alert-danger">
+        <h5>Você tem certeza que deseja excluir a categoria abaixo?</h5>
+        <p><strong>Nome:</strong> @categoria.Nome</p>
+
+        <div class="mt-3">
+            <button class="btn btn-danger" @onclick="ConfirmarExclusao">Excluir</button>
+            <a href="/Categorias" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </div>
+}

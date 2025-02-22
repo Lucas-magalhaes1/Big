@@ -1,8 +1,5 @@
 @page "/Categorias/Editar/{id:int}"
-@using Big.Models
-@using Big.Services
-@inject CategoriaService CategoriaService
-@inject NavigationManager Navigation
+@inherits Big.Pages.Categorias.EditarCategoriaBase
 @rendermode InteractiveServer
 
 <h3>Editar Categoria</h3>
@@ -22,7 +19,6 @@ else
 
     <EditForm Model="@categoria" OnValidSubmit="OnValidSubmitAsync">
         <DataAnnotationsValidator />
-        
 
         <div class="mb-3">
             <label class="form-label">Nome:</label>
@@ -45,39 +41,4 @@ else
         <button type="submit" class="btn btn-success">Salvar</button>
         <a href="/Categorias" class="btn btn-secondary">Cancelar</a>
     </EditForm>
-}
-
-@code {
-    [Parameter]
-    public int Id { get; set; }
-
-    private Categoria? categoria;
-    private bool mostrarFeedback = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        categoria = await CategoriaService.ObterPorIdAsync(Id);
-
-        if (categoria == null)
-        {
-            Navigation.NavigateTo("/Categorias");
-        }
-    }
-
-    private async Task OnValidSubmitAsync()
-    {
-        try
-        {
-            await CategoriaService.AtualizarAsync(categoria);
-            mostrarFeedback = true;
-            StateHasChanged();
-
-            await Task.Delay(2000);
-            Navigation.NavigateTo("/Categorias");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao atualizar a categoria: {ex.Message}");
-        }
-    }
 }

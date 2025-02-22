@@ -14,6 +14,9 @@
         <None Remove="Components\Account\**" />
         <None Remove="Components\Pages\Cliente" />
         <None Remove="Tests\**" />
+        <None Update="docker-compose.yml">
+          <DependentUpon>Dockerfile</DependentUpon>
+        </None>
     </ItemGroup>
 
     <ItemGroup>

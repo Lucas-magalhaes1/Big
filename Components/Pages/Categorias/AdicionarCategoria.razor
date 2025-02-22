@@ -1,8 +1,5 @@
 @page "/Categorias/Adicionar"
-@using Big.Models
-@using Big.Services
-@inject CategoriaService CategoriaService
-@inject NavigationManager Navigation
+@inherits Big.Pages.Categorias.AdicionarCategoriaBase
 @rendermode InteractiveServer
 
 <h3>Adicionar Categoria</h3>
@@ -38,25 +35,3 @@
     <button type="submit" class="btn btn-success">Salvar</button>
     <a href="/Categorias" class="btn btn-secondary">Cancelar</a>
 </EditForm>
-
-@code {
-    private Categoria novaCategoria = new Categoria();
-    private bool mostrarFeedback = false;
-
-    private async Task OnValidSubmitAsync()
-    {
-        try
-        {
-            await CategoriaService.AdicionarAsync(novaCategoria);
-            mostrarFeedback = true;
-            StateHasChanged();
-
-            await Task.Delay(2000);
-            Navigation.NavigateTo("/Categorias");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao adicionar a categoria: {ex.Message}");
-        }
-    }
-}
