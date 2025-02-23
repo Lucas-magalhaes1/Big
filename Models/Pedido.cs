@@ -25,4 +25,6 @@ public class Pedido
     public decimal Total { get; set; }
 
     public List<ProdutoPedido> Produtos { get; set; } = new();
+    
+    public string FormaPagamento { get; set; } 
 }

@@ -11,6 +11,8 @@ namespace Big.Pages.Pedidos
         [Inject] protected ProdutoService ProdutoService { get; set; }
         [Inject] protected CategoriaService CategoriaService { get; set; }
         [Inject] protected NavigationManager Navigation { get; set; }
+        
+        
 
         protected Pedido novoPedido = new();
         protected List<Cliente>? clientes = new();
