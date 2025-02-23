@@ -71,41 +71,15 @@
 </div>
 
 @code {
-    private List<PedidoMock> mockPedidos = new();
-    private List<ChartSeries> seriesVendas = new();
-    private string[] labelsMeses = { "Jul", "Ago", "Set", "Out", "Nov" };
-    
+    private HomeCode _code = new();
+
+    private List<PedidoMock> mockPedidos => _code.mockPedidos;
+    private List<ChartSeries> seriesVendas => _code.seriesVendas;
+    private string[] labelsMeses => _code.labelsMeses;
+    private decimal MediaTicket => _code.MediaTicket;
+
     protected override async Task OnInitializedAsync()
     {
-        GerarDadosMock();
-    }
-    
-    private void GerarDadosMock()
-    {
-        var random = new Random();
-        mockPedidos = new List<PedidoMock>
-        {
-            new PedidoMock { ClienteNome = "Ana Souza", DataPedido = DateTime.Now, Status = "Aprovado", Total = random.Next(500, 1000) },
-            new PedidoMock { ClienteNome = "Carlos Mendes", DataPedido = DateTime.Now, Status = "Rejeitado", Total = random.Next(50, 200) },
-            new PedidoMock { ClienteNome = "Mariana Costa", DataPedido = DateTime.Now, Status = "Aprovado", Total = random.Next(600, 1200) },
-            new PedidoMock { ClienteNome = "João Lima", DataPedido = DateTime.Now, Status = "Aprovado", Total = random.Next(700, 1300) },
-            new PedidoMock { ClienteNome = "Pedro Silva", DataPedido = DateTime.Now, Status = "Rejeitado", Total = random.Next(50, 200) },
-        };
-
-        seriesVendas = new List<ChartSeries>
-        {
-            new ChartSeries { Name = "Pedidos Rejeitados", Data = new double[] { random.Next(1, 10), random.Next(1, 10), random.Next(1, 10), random.Next(1, 10), random.Next(1, 10) },  },
-            new ChartSeries { Name = "Pedidos Aprovados", Data = new double[] { random.Next(30, 60), random.Next(30, 60), random.Next(30, 60), random.Next(30, 60), random.Next(30, 60) }, }
-        };
-    }
-    
-    private decimal MediaTicket => mockPedidos.Count > 0 ? mockPedidos.Sum(p => p.Total) / mockPedidos.Count : 0;
-    
-    private class PedidoMock
-    {
-        public string ClienteNome { get; set; }
-        public DateTime DataPedido { get; set; }
-        public string Status { get; set; }
-        public decimal Total { get; set; }
+        _code.GerarDadosMock();
     }
 }
