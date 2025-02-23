@@ -67,6 +67,12 @@ namespace Big.Services
             await Task.Delay(50);
             _vendedores.RemoveAll(u => u.Id == id);
         }
+        
+        public async Task<ApplicationUser?> ObterPorEmailAsync(string email)
+        {
+            await Task.Delay(50); 
+            return _vendedores.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+        }
     }
 
     public class FiltrosUsuario
