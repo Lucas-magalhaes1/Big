@@ -1,0 +1,22 @@
+@page "/Usuarios/Bloquear/{id}"
+@inherits Big.Pages.Usuarios.BloquearUsuarioBase
+@rendermode InteractiveServer
+
+<h3><i class="bi bi-lock"></i> Bloquear Usuário</h3>
+
+@if (usuario == null)
+{
+    <p>Carregando usuário...</p>
+}
+else
+{
+    <div class="alert alert-warning">
+        <p>
+            Tem certeza que deseja bloquear o usuário <strong>@usuario.NomeCompleto</strong>?  
+            Ele não poderá mais acessar o sistema.
+        </p>
+    </div>
+
+    <button class="btn btn-danger" @onclick="BloquearUsuario">Bloquear</button>
+    <a href="/Usuarios" class="btn btn-secondary">Cancelar</a>
+}

@@ -58,6 +58,14 @@
       <Compile Remove="Data\Migrations\20250208005304_CriarTabelaPedidos.cs" />
       <Compile Remove="Data\Migrations\20250208005304_CriarTabelaPedidos.Designer.cs" />
       <Compile Remove="Tests\**" />
+      <Compile Remove="Components\Pages\Usuario\AdicionarUser.razor.cs" />
+      <Compile Remove="Components\Pages\Usuario\AdicionarUsuario.razor.cs" />
+      <Compile Update="Components\Pages\Usuarios\RemoverUsuarioBase.cs">
+        <DependentUpon>RemoverUsuario.razor</DependentUpon>
+      </Compile>
+      <Compile Update="Components\Pages\Usuarios\BloquearUsuarioBase.cs">
+        <DependentUpon>BloquearUsuario.razor</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>
@@ -74,6 +82,7 @@
       <Content Remove="Components\Pages\Auth.razor" />
       <Content Remove="Components\Pages\Gestão\PedidoEditar.razor" />
       <Content Remove="Tests\**" />
+      <Content Remove="Components\Pages\Usuario\AdicionarUsuario.razor" />
     </ItemGroup>
 
     <ItemGroup>
@@ -115,10 +124,6 @@
       <_ContentIncludedByDefault Remove="Components\Account\Shared\RedirectToLogin.razor" />
       <_ContentIncludedByDefault Remove="Components\Account\Shared\ShowRecoveryCodes.razor" />
       <_ContentIncludedByDefault Remove="Components\Account\Shared\StatusMessage.razor" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Components\Pages\Usuario\" />
     </ItemGroup>
 
 </Project>

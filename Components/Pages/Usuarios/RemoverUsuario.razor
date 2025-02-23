@@ -1,0 +1,23 @@
+@inherits Big.Pages.Usuarios.RemoverUsuarioBase
+
+@if (ExibirModal)
+{
+    <div class="modal-backdrop"></div>
+    <div class="modal show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Remover Usuário</h5>
+                    <button type="button" class="btn-close" @onclick="FecharModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja remover <strong>@UsuarioSelecionado?.NomeCompleto</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" @onclick="ConfirmarRemocao">Remover</button>
+                    <button class="btn btn-secondary" @onclick="FecharModal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

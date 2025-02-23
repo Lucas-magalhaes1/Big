@@ -1,0 +1,36 @@
+@page "/Vendedores/Criar"
+@inherits Big.Pages.Usuarios.CriarUsuarioBase
+@rendermode InteractiveServer
+
+<h1>Criar Usuário</h1>
+
+<EditForm Model="@novoUsuario" OnValidSubmit="OnValidSubmitAsync">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label class="form-label">Nome Completo</label>
+        <InputText @bind-Value="novoUsuario.NomeCompleto" class="form-control" />
+        <ValidationMessage For="@(() => novoUsuario.NomeCompleto)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <InputText @bind-Value="novoUsuario.Email" class="form-control" />
+        <ValidationMessage For="@(() => novoUsuario.Email)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">CPF</label>
+        <InputText @bind-Value="novoUsuario.CPF" class="form-control" />
+        <ValidationMessage For="@(() => novoUsuario.CPF)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Cargo</label>
+        <InputText @bind-Value="novoUsuario.RoleAdicional" class="form-control" />
+        <ValidationMessage For="@(() => novoUsuario.RoleAdicional)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Salvar</button>
+    <a href="/Usuarios" class="btn btn-secondary">Cancelar</a>
+</EditForm>

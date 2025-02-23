@@ -6,7 +6,7 @@ using Big.Models;
 
 namespace Big.Services
 {
-    public class VendedorService
+    public class UsuarioService
     {
         private readonly List<ApplicationUser> _vendedores = new()
         {

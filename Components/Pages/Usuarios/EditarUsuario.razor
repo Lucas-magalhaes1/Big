@@ -1,6 +1,5 @@
 @page "/Vendedores/Editar/{id}"
-@using Big.Models
-@inject NavigationManager Navigation
+@inherits Big.Pages.Vendedores.EditarVendedorBase
 @rendermode InteractiveServer
 
 <h3><i class="bi bi-person-badge"></i> Editar Usuário</h3>
@@ -51,34 +50,4 @@ else
             <a href="/Usuarios" class="btn btn-secondary">Cancelar</a>
         </div>
     </EditForm>
-}
-
-@code {
-    [Parameter] public string id { get; set; }
-    private ApplicationUser usuario;
-
-    protected override void OnInitialized()
-    {
-        usuario = new ApplicationUser
-        {
-            Id = id,
-            NomeCompleto = "Usuário Mockado",
-            Email = "usuario@email.com",
-            CPF = "000.000.000-00",
-            Endereco = "Rua Exemplo, 123",
-            RoleAdicional = "Vendedor",
-            
-        };
-    }
-
-    private void SalvarAlteracoes()
-    {
-        Console.WriteLine("Usuário atualizado!");
-        Navigation.NavigateTo("/Usuarios");
-    }
-
-    private void ResetarSenha()
-    {
-        Console.WriteLine("Senha resetada!");
-    }
 }
