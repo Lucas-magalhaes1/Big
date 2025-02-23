@@ -17,6 +17,9 @@
         <None Update="docker-compose.yml">
           <DependentUpon>Dockerfile</DependentUpon>
         </None>
+        <None Update="Components\Layout\Erro.css">
+          <DependentUpon>Eror.razor</DependentUpon>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -36,6 +39,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.SqlServer.Server" Version="1.0.0" />
         <PackageReference Include="MudBlazor" Version="8.2.0" />
+        <PackageReference Include="QuestPDF" Version="2025.1.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -83,6 +87,7 @@
       <Content Remove="Components\Pages\Gestão\PedidoEditar.razor" />
       <Content Remove="Tests\**" />
       <Content Remove="Components\Pages\Usuario\AdicionarUsuario.razor" />
+      <Content Remove="wwwroot\favicon.png" />
     </ItemGroup>
 
     <ItemGroup>

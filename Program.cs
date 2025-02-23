@@ -10,6 +10,7 @@ using Big.Data;
 using Big.Middleware;
 using Big.Services;
 using Big.Models;
+using QuestPDF.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,11 +62,15 @@ builder.Services.AddMudServices();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddCascadingAuthenticationState();
+QuestPDF.Settings.License = LicenseType.Community;
+
 
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<ClienteService>();
 builder.Services.AddScoped<PedidoService>();
+builder.Services.AddScoped<PedidoPdfService>();
+
 
 var app = builder.Build();
 

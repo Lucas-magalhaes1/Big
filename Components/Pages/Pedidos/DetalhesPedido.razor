@@ -1,5 +1,6 @@
 @page "/Pedidos/Detalhes/{id:int}"
 @inherits Big.Pages.Pedidos.DetalhesPedidoBase
+@inject IJSRuntime JS
 @rendermode InteractiveServer
 
 <h3>Detalhes do Pedido</h3>
@@ -17,6 +18,13 @@ else
             <p><strong>Data do Pedido:</strong> @pedido.DataPedido.ToShortDateString()</p>
             <p><strong>Status:</strong> <span class="badge @(pedido.Status == "Aprovado" ? "bg-success" : "bg-warning")">@pedido.Status</span></p>
             <p><strong>Total:</strong> @pedido.Total.ToString("C")</p>
+
+            @if (pedido.Status == "Aprovado")
+            {
+                <button class="btn btn-primary mt-3" @onclick="BaixarPdf">
+                    📄 Baixar Folha de Pedido
+                </button>
+            }
         </div>
     </div>
 
