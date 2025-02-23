@@ -1,0 +1,17 @@
+﻿@page "/error"
+@using MudBlazor
+
+<MudContainer>
+    <MudPaper Class="error-container" Elevation="3">
+        <MudIcon Icon="@Icons.Material.Filled.ErrorOutline" Size="Size.Large" Color="Color.Error" />
+        <h2>Oops! Algo deu errado.</h2>
+        <p>Ocorreu um erro interno no servidor. Tente novamente mais tarde.</p>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/">
+            Voltar para a página inicial
+        </MudButton>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    [Inject] private NavigationManager Navigation { get; set; }
+}

@@ -25,8 +25,7 @@ namespace Big.Middleware
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro inesperado ocorreu.");
-                context.Response.StatusCode = 500;
-                await context.Response.WriteAsync("Ocorreu um erro interno no servidor.");
+                context.Response.Redirect("/error");
             }
         }
     }
