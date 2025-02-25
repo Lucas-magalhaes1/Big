@@ -1,0 +1,46 @@
+@page "/Login"
+@inherits Big.Pages.Login.LoginBase
+@rendermode InteractiveServer
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4 d-flex flex-row overflow-hidden" style="max-width: 900px; width: 100%;">
+        
+        <div class="col-md-6 d-none d-md-block p-0">
+            <div class="h-100">
+                <img src="/Banner.jpg" class="img-fluid rounded-start w-100 h-100" style="object-fit: cover;" alt="Banner" />
+            </div>
+        </div>
+
+        
+        <div class="col-md-6 d-flex flex-column justify-content-center p-4">
+            <h3 class="text-center">Login</h3>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger">@errorMessage</div>
+            }
+
+            <EditForm Model="@loginModel" OnValidSubmit="Login">
+                <DataAnnotationsValidator />
+                
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <InputText class="form-control" @bind-Value="loginModel.Email" placeholder="Digite seu email" />
+                    <ValidationMessage For="@(() => loginModel.Email)" />
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Senha</label>
+                    <InputText class="form-control" @bind-Value="loginModel.Senha" type="password" placeholder="Digite sua senha" />
+                    <ValidationMessage For="@(() => loginModel.Senha)" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            </EditForm>
+            
+            <div class="text-center mt-3">
+                <a href="/recuperar-senha" class="text-decoration-none">Esqueceu sua senha?</a>
+            </div>
+        </div>
+    </div>
+</div>
