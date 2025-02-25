@@ -1,0 +1,54 @@
+@page "/Clientes/Historico/{id:int}"
+@inherits Big.Pages.Clientes.HistoricoPedidosBase
+@rendermode InteractiveServer
+
+<h3>Histórico de Pedidos - @cliente?.Nome</h3>
+
+@if (pedidos == null)
+{
+    <p>Carregando pedidos...</p>
+}
+else if (!pedidos.Any())
+{
+    <p>Este cliente ainda não fez pedidos.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Data</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var pedido in pedidos)
+        {
+            <tr>
+                <td>#@pedido.Id</td>
+                <td>@pedido.DataPedido.ToShortDateString()</td>
+                <td>
+                    <span class="badge @(pedido.Status == "Aprovado" ? "bg-success" : "bg-warning")">
+                        @pedido.Status
+                    </span>
+                </td>
+                <td>@pedido.Total.ToString("C")</td>
+                <td>
+                    <a href="/Pedidos/Detalhes/@pedido.Id" class="btn btn-primary btn-sm">
+                        🔍 Ver Detalhes
+                    </a>
+                    <button class="btn btn-secondary btn-sm" @onclick="() => DuplicarPedido(pedido.Id)">
+                        🔄 Duplicar Pedido
+                    </button>
+                </td>
+            </tr>
+        }
+        <a href="/Clientes" class="btn btn-secondary btn-sm">
+            Voltar
+        </a>
+        </tbody>
+    </table>
+}
