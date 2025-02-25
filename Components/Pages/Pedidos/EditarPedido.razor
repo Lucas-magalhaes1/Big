@@ -56,8 +56,8 @@ else
                     <tr>
                         <td>@item.Produto.Nome</td>
                         <td>
-                            <InputNumber @bind-Value="item.Quantidade" class="form-control"
-                                         @onchange="() => AtualizarTotal()" />
+                            <InputNumber class="form-control" @bind-Value="item.Quantidade"
+                                         @onchange="(e) => AtualizarQuantidade(item, Convert.ToInt32(e.Value))" />
                         </td>
                         <td>@item.PrecoUnitario.ToString("C")</td>
                         <td>@(item.Quantidade * item.PrecoUnitario).ToString("C")</td>

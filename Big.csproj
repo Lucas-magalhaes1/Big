@@ -70,6 +70,24 @@
       <Compile Update="Components\Pages\Usuarios\BloquearUsuarioBase.cs">
         <DependentUpon>BloquearUsuario.razor</DependentUpon>
       </Compile>
+      <Compile Update="Components\Pages\Home\Home.razor.cs">
+        <DependentUpon>Home.razor</DependentUpon>
+      </Compile>
+      <Compile Update="Components\Pages\Usuarios\LoginUsuarioBase.cs">
+        <DependentUpon>LoginUsuario.razor</DependentUpon>
+      </Compile>
+      <Compile Update="Components\Pages\Usuarios\CriarUsuarioBase.cs">
+        <DependentUpon>CriaUsuario.razor</DependentUpon>
+      </Compile>
+      <Compile Update="Components\Pages\Usuarios\EditarPerfilBase.cs">
+        <DependentUpon>EditarPerfil.razor</DependentUpon>
+      </Compile>
+      <Compile Update="Components\Pages\Usuarios\RecuperarSenhaBase.cs">
+        <DependentUpon>RecuperarSenha.razor</DependentUpon>
+      </Compile>
+      <Compile Update="Components\Pages\Pedidos\HistoricoPedidosBase.cs">
+        <DependentUpon>HistoricoPedidos.razor</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

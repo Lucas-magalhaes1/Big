@@ -88,7 +88,7 @@ else
                             </button>
                             <a href="/Pedidos/Editar/@pedido.Id" class="btn btn-primary btn-sm">Editar</a>
                             <a href="/Gestao/Pedidos/Detalhes/@pedido.Id" class="btn btn-info btn-sm">👁 Ver Detalhes</a>
-                            <button class="btn btn-secondary btn-sm" @onclick="@(() => GerarNota(pedido))">
+                            <button class="btn btn-primary btn-sm" @onclick="() => BaixarPdf(pedido)">
                                 📄 Nota
                             </button>
                         </td>

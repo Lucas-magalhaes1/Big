@@ -96,6 +96,8 @@ namespace Big.Pages.Pedidos
                 Console.WriteLine("Erro: Preencha todos os campos.");
                 return;
             }
+            
+            novoPedido.Total = produtosPedido.Sum(p => p.Quantidade * p.PrecoUnitario);
 
             await PedidoService.AdicionarAsync(novoPedido, produtosPedido);
             Navigation.NavigateTo("/Pedidos");

@@ -29,9 +29,19 @@ namespace Big.Services
                 .ThenInclude(pp => pp.Produto)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
+        public async Task<List<Pedido>> ObterPorClienteIdAsync(int clienteId)
+        {
+            return await _context.Pedidos
+                .Where(p => p.ClienteId == clienteId)
+                .OrderByDescending(p => p.DataPedido)
+                .ToListAsync();
+        }
+
 
         public async Task AdicionarAsync(Pedido pedido, List<ProdutoPedido> produtosPedido)
         {
+            pedido.Total = produtosPedido.Sum(p => p.Quantidade * p.PrecoUnitario);
+
             _context.Pedidos.Add(pedido);
             await _context.SaveChangesAsync();
 
@@ -70,5 +80,13 @@ namespace Big.Services
                 await _context.SaveChangesAsync();
             }
         }
+        
+        public async Task<int> AdicionarERetornarIdAsync(Pedido pedido)
+        {
+            _context.Pedidos.Add(pedido);
+            await _context.SaveChangesAsync();
+            return pedido.Id; 
+        }
+
     }
 }

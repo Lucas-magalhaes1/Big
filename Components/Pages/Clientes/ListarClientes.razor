@@ -92,6 +92,9 @@ else
                         </span>
                     </td>
                     <td>
+                        <a href="/Clientes/Historico/@cliente.Id" class="btn btn-info btn-sm">
+                            📜 Histórico
+                        </a>
                         <button class="btn @(cliente.Ativo ? "btn-warning" : "btn-success") btn-sm"
                                 @onclick="() => AlternarStatus(cliente)">
                             @(cliente.Ativo ? "Inativar" : "Ativar")

@@ -49,7 +49,16 @@ namespace Big.Pages.Pedidos
                 }
             }
         }
-
+        
+        protected void AtualizarQuantidade(ProdutoPedido item, int novaQuantidade)
+        {
+            if (novaQuantidade > 0)
+            {
+                item.Quantidade = novaQuantidade;
+                AtualizarTotal();
+            }
+        }
+        
         protected void RemoverProduto(ProdutoPedido item)
         {
             pedido.Produtos.Remove(item);
@@ -65,6 +74,7 @@ namespace Big.Pages.Pedidos
         {
             if (pedido != null)
             {
+                AtualizarTotal(); 
                 await PedidoService.AtualizarAsync(pedido);
                 Navigation.NavigateTo("/Pedidos");
             }

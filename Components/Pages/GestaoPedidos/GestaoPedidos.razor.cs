@@ -1,13 +1,18 @@
 using Microsoft.AspNetCore.Components;
 using Big.Models;
 using Big.Services;
+using Microsoft.JSInterop;
 
 namespace Big.Pages.GestaoPedidos
 {
     public class GestaoPedidosBase : ComponentBase
     {
-        [Inject] protected PedidoService PedidoService { get; set; }
-        [Inject] protected NavigationManager Navigation { get; set; }
+        [Inject] protected PedidoService PedidoService { get; set; } = default!;
+        [Inject] protected NavigationManager Navigation { get; set; } = default!;
+        [Inject] protected ProdutoService ProdutoService { get; set; } = default!;
+
+        [Inject] protected PedidoPdfService PedidoPdfService { get; set; } = default!;
+        [Inject] protected IJSRuntime JS { get; set; } = default!;
 
         protected List<Pedido>? pedidos;
         protected List<IGrouping<DateTime, Pedido>> pedidosAgrupados;
@@ -64,17 +69,52 @@ namespace Big.Pages.GestaoPedidos
             filtros = new FiltrosPedido();
             AplicarFiltros();
         }
+        
+        protected async Task ReduzirEstoquePedido(Pedido pedido)
+        {
+            foreach (var item in pedido.Produtos)
+            {
+                var produto = await ProdutoService.ObterPorIdAsync(item.ProdutoId);
+                if (produto != null)
+                {
+                    produto.EstoqueCentroDistribuicao -= item.Quantidade;
+
+                    if (produto.EstoqueCentroDistribuicao < 0)
+                        produto.EstoqueCentroDistribuicao = 0; 
+
+                    await ProdutoService.AtualizarAsync(produto);
+                }
+            }
+        }
 
         protected async Task AlterarStatus(Pedido pedido, string novoStatus)
         {
             await PedidoService.AtualizarStatusAsync(pedido.Id, novoStatus);
             pedido.Status = novoStatus;
+            
+            if (novoStatus == "Aprovado")
+            {
+                await ReduzirEstoquePedido(pedido);
+            }
+
             StateHasChanged();
         }
 
-        protected async Task GerarNota(Pedido pedido)
+        protected async Task BaixarPdf(Pedido pedido)
         {
-            Console.WriteLine($"Gerando nota para pedido #{pedido.Id}...");
+            if (pedido == null || pedido.Status != "Aprovado") return;
+
+            try
+            {
+                var pdfBytes = await PedidoPdfService.GerarPdfPedidoAsync(pedido);
+                var base64Pdf = Convert.ToBase64String(pdfBytes);
+
+                await JS.InvokeVoidAsync("downloadPdf", base64Pdf, $"Pedido_{pedido.Id}.pdf");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao gerar PDF: {ex.Message}");
+            }
         }
 
         protected class FiltrosPedido

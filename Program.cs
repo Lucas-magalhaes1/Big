@@ -70,6 +70,11 @@ builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<ClienteService>();
 builder.Services.AddScoped<PedidoService>();
 builder.Services.AddScoped<PedidoPdfService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<UsuarioService>();
+
+
 
 
 var app = builder.Build();
@@ -84,6 +89,7 @@ else
     app.UseHsts();
 }
 
+app.UseMiddleware<AuthMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseMiddleware<ExceptionMiddleware>();

@@ -22,9 +22,13 @@ else
             @if (pedido.Status == "Aprovado")
             {
                 <button class="btn btn-primary mt-3" @onclick="BaixarPdf">
-                    📄 Baixar Folha de Pedido
+                    📄 Nota
                 </button>
             }
+            <button class="btn btn-secondary mt-3" @onclick="() => DuplicarPedido(pedido.Id)">
+                🔄 Duplicar Pedido
+            </button>
+
         </div>
     </div>
 
