@@ -73,6 +73,8 @@ builder.Services.AddScoped<PedidoPdfService>();
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddRateLimiting();
+
 
 
 
@@ -96,11 +98,10 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseRouting();
 app.UseAuthentication(); 
 app.UseAuthorization();  
-
 app.UseAntiforgery();
-
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+app.UseRateLimiter();
 
 using (var scope = app.Services.CreateScope())
 {
