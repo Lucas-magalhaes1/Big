@@ -20,6 +20,12 @@ var culture = new CultureInfo("pt-BR");
 CultureInfo.DefaultThreadCurrentCulture = culture;
 CultureInfo.DefaultThreadCurrentUICulture = culture;
 
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory()) 
+    .AddJsonFile("Configs/appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"Configs/appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables();
+
 // Configuração do banco de dados
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
                        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
