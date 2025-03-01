@@ -1,0 +1,20 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/IgnoredPaths/=MUDBLAZOR_005CMUDBLAZOR_002EMIN_002ECSS/@EntryIndexedValue">MudBlazor\MudBlazor.min.css</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/IgnoredPaths/=SOLUTION_005CPRESENTATION_005CCOMPONENTS_005C_005FCONTENT_005CMUDBLAZOR/@EntryIndexedValue">Solution\Presentation\Components\_content\MudBlazor</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/IgnoredPaths/=SOLUTION_005CPRESENTATION_005CCOMPONENTS_005C_005FFRAMEWORK_005CBLAZOR_002EWEB_002EJS/@EntryIndexedValue">Solution\Presentation\Components\_framework\blazor.web.js</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/MappedPaths/=MUDBLAZOR/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/MappedPaths/=MUDBLAZOR_005CMUDBLAZOR_002EMIN_002EJS/@EntryIndexedValue"></s:String>
+	
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/MappedPaths/=SOLUTION_005CPRESENTATION_005CCOMPONENTS_005CBIG_002ESTYLES_002ECSS/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/MappedPaths/=SOLUTION_005CPRESENTATION_005CCOMPONENTS_005C_005FCONTENT/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/MappedPaths/=SOLUTION_005CPRESENTATION_005CCOMPONENTS_005C_005FFRAMEWORK/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/MappedPaths/=WWWROOT_005C_005FCONTENT/@EntryIndexedValue"></s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=MUDBLAZOR/@EntryIndexedValue">MudBlazor</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=MUDBLAZOR_005CMUDBLAZOR_002EMIN_002ECSS/@EntryIndexedValue">MudBlazor\MudBlazor.min.css</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=MUDBLAZOR_005CMUDBLAZOR_002EMIN_002EJS/@EntryIndexedValue">MudBlazor\MudBlazor.min.js</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=SOLUTION_005CPRESENTATION_005CCOMPONENTS_005CBIG_002ESTYLES_002ECSS/@EntryIndexedValue">Solution\Presentation\Components\Big.styles.css</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=SOLUTION_005CPRESENTATION_005CCOMPONENTS_005C_005FCONTENT/@EntryIndexedValue">Solution\Presentation\Components\_content</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=SOLUTION_005CPRESENTATION_005CCOMPONENTS_005C_005FCONTENT_005CMUDBLAZOR/@EntryIndexedValue">Solution\Presentation\Components\_content\MudBlazor</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=SOLUTION_005CPRESENTATION_005CCOMPONENTS_005C_005FFRAMEWORK/@EntryIndexedValue">Solution\Presentation\Components\_framework</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=SOLUTION_005CPRESENTATION_005CCOMPONENTS_005C_005FFRAMEWORK_005CBLAZOR_002EWEB_002EJS/@EntryIndexedValue">Solution\Presentation\Components\_framework\blazor.web.js</s:String>
+	<s:String x:Key="/Default/CodeInspection/WebPathMapping/PathsInCorrectCasing/=WWWROOT_005C_005FCONTENT/@EntryIndexedValue">wwwroot\_content</s:String></wpf:ResourceDictionary>

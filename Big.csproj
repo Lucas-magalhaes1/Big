@@ -20,6 +20,11 @@
         <None Update="Components\Layout\Erro.css">
           <DependentUpon>Eror.razor</DependentUpon>
         </None>
+        <None Remove="Solution\Application\Services" />
+        <None Remove="Solution\Presentation\Components\Account\**" />
+        <None Remove="Solution\Presentation\Components\Pages\Cliente" />
+        <None Remove="Models\**" />
+        <None Include="wwwroot\favicon.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -88,12 +93,16 @@
       <Compile Update="Components\Pages\Pedidos\HistoricoPedidosBase.cs">
         <DependentUpon>HistoricoPedidos.razor</DependentUpon>
       </Compile>
+      <Compile Remove="Solution\Presentation\Components\Account\**" />
+      <Compile Remove="Models\**" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Remove="Migrations\**" />
       <EmbeddedResource Remove="Components\Account\**" />
       <EmbeddedResource Remove="Tests\**" />
+      <EmbeddedResource Remove="Solution\Presentation\Components\Account\**" />
+      <EmbeddedResource Remove="Models\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -106,6 +115,10 @@
       <Content Remove="Tests\**" />
       <Content Remove="Components\Pages\Usuario\AdicionarUsuario.razor" />
       <Content Remove="wwwroot\favicon.png" />
+      <Content Remove="Solution\Presentation\Components\Account\**" />
+      <Content Remove="Solution\Presentation\Components\Pages\Weather.razor" />
+      <Content Remove="Solution\Presentation\Components\Pages\Counter.razor" />
+      <Content Remove="Models\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -147,6 +160,141 @@
       <_ContentIncludedByDefault Remove="Components\Account\Shared\RedirectToLogin.razor" />
       <_ContentIncludedByDefault Remove="Components\Account\Shared\ShowRecoveryCodes.razor" />
       <_ContentIncludedByDefault Remove="Components\Account\Shared\StatusMessage.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\AccessDenied.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\ConfirmEmail.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\ConfirmEmailChange.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\ExternalLogin.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\ForgotPassword.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\ForgotPasswordConfirmation.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\InvalidPasswordReset.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\InvalidUser.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Lockout.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Login.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\LoginWith2fa.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\LoginWithRecoveryCode.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\ChangePassword.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\DeletePersonalData.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\Disable2fa.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\Email.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\EnableAuthenticator.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\ExternalLogins.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\GenerateRecoveryCodes.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\Index.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\PersonalData.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\ResetAuthenticator.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\SetPassword.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\TwoFactorAuthentication.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Manage\_Imports.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\Register.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\RegisterConfirmation.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\ResendEmailConfirmation.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\ResetPassword.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\ResetPasswordConfirmation.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Pages\_Imports.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Shared\AccountLayout.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Shared\ExternalLoginPicker.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Shared\ManageLayout.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Shared\ManageNavMenu.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Shared\RedirectToLogin.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Shared\ShowRecoveryCodes.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Components\Account\Shared\StatusMessage.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Auth.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Categorias\AdicionarCategoria.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Categorias\EditarCategoria.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Categorias\ExcluirCategoria.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Categorias\ListarCategorias.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Categorias\ProdutosPorCategoria.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Clientes\AdicionarCliente.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Clientes\EditarCliente.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Clientes\ExcluirCliente.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Clientes\ListarClientes.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Counter.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Dashboard\Dashboard.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\GestaoPedidos\GestaoPedidos.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\GestaoPedidos\PedidoDetalhes.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\GestaoPedidos\PedidoEditar.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Home\Home.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Pedidos\AdicionarPedido.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Pedidos\DetalhesPedido.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Pedidos\EditarPedido.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Pedidos\ExcluirPedido.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Pedidos\HistoricoPedidos.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Pedidos\Pedidos.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Produtos\AdicionarProduto.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Produtos\DetalhesProduto.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Produtos\EditarProduto.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Produtos\Estoque.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Produtos\ExcluirProduto.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Produtos\Produtos.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Usuarios\BloquearUsuario.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Usuarios\CriaUsuario.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Usuarios\EditarPerfil.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Usuarios\EditarUsuario.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Usuarios\LoginUsuario.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Usuarios\RecuperarSenha.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Usuarios\RemoverUsuario.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Usuarios\Usuarios.razor" />
+      <_ContentIncludedByDefault Remove="Solution\Presentation\Pages\Weather.razor" />
+      <_ContentIncludedByDefault Remove="wwwroot\app.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\Banner.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\favicon.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\Js\site.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\logo.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Solution\Application\DTOs\" />
+      <Folder Include="Solution\Application\Interfaces\" />
+      <Folder Include="Solution\Domain\Enums\" />
+      <Folder Include="Solution\Infrastructure\Repositories\" />
+      <Folder Include="Solution\Presentation\" />
+      <Folder Include="Solution\Tests\IntegrationTests\" />
+      <Folder Include="Solution\Tests\UnitTests\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Solution\Presentation\Components\App.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Layout\Eror.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Layout\MainLayout.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Layout\NavMenu.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Categorias\AdicionarCategoria.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Categorias\EditarCategoria.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Categorias\ExcluirCategoria.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Categorias\ListarCategorias.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Categorias\ProdutosPorCategoria.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Clientes\AdicionarCliente.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Clientes\EditarCliente.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Clientes\ExcluirCliente.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Clientes\ListarClientes.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Dashboard\Dashboard.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\GestaoPedidos\GestaoPedidos.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\GestaoPedidos\PedidoDetalhes.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\GestaoPedidos\PedidoEditar.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Home\Home.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Pedidos\AdicionarPedido.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Pedidos\DetalhesPedido.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Pedidos\EditarPedido.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Pedidos\ExcluirPedido.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Pedidos\HistoricoPedidos.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Pedidos\Pedidos.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Produtos\AdicionarProduto.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Produtos\DetalhesProduto.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Produtos\EditarProduto.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Produtos\Estoque.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Produtos\ExcluirProduto.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Produtos\Produtos.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Usuarios\BloquearUsuario.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Usuarios\CriaUsuario.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Usuarios\EditarPerfil.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Usuarios\EditarUsuario.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Usuarios\LoginUsuario.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Usuarios\RecuperarSenha.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Usuarios\RemoverUsuario.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Pages\Usuarios\Usuarios.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\Routes.razor" />
+      <AdditionalFiles Include="Solution\Presentation\Components\_Imports.razor" />
     </ItemGroup>
 
 </Project>
