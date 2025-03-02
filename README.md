@@ -10,7 +10,8 @@
 </p>
 
 
-![Home](./image/Home.png)
+![Home](Image/Home.png)
+
 
 ## 📌 Descrição
 
@@ -64,45 +65,46 @@ Aqui estão algumas capturas de tela do sistema, destacando suas principais func
 
 ### 📊 Dashboard
 *Visão geral do sistema e métricas importantes.*  
-![Dashboard](./image/Dashboard.png)
+![Dashboard](./Image/Dashboard.png)
 
 ---
 
 ### 📂 Categorias
 *Organize e gerencie os produtos com facilidade.*  
-![Categorias](./image/Categorias.png)
+![Categorias](./Image/Categorias.png)
 
 ---
 
 ### 🛒 Produtos
 *Visualize, edite e gerencie os produtos do catálogo.*  
-![Produtos](./image/Produtos.png)
+![Produtos](./Image/Produtos.png)
 
 ---
 
 ### 📦 Pedidos
 *Controle e acompanhe os pedidos em tempo real.*  
-![Pedidos](./image/Pedidos.png)
+![Pedidos](./Image/Pedidos.png)
 
 ---
 
-### 📝 Nota de Pedido
-*Registro detalhado das solicitações.*
-<div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
-    <img src="./image/Nota.png" alt="Nota" width="60%">
-</div>  
+### 📝 Nota de Pedido  
+*Registro detalhado das solicitações.*  
+
+<p align="center">
+    <img src="./Image/Nota.png" alt="Nota" width="60%">
+</p>
 
 ---
 
 ### 👥 Gerenciamento de Funcionários
 *Controle de acessos e dados da equipe.*  
-![Funcionarios](./image/Funcionarios.png)
+![Funcionarios](./Image/Funcionarios.png)
 
 ---
 
 ### 🔐 Login e Autenticação
 *Acesso seguro ao sistema.*  
-![Login](./image/Login.png)
+![Login](./Image/Login.png)
 
 ---
 
